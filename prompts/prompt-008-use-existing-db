@@ -11,4 +11,4 @@ string connectionString = "Server=tcp:<server>.database.windows.net;" +
                           "User Id=<client-id-of-user-assigned-mi>;";
 
 
-error handle so that the interface returns dummy data if there are issues connecting to database
+error handle so that the interface returns dummy data if there are issues connecting to database, also put the error in a header bar on the page
