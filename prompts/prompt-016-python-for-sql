@@ -1,5 +1,13 @@
 create a python file called run-sql with the contents below, changing the server and database variables at the top to those created earlier in the process.
-If you were not asked ot create them then leave them as is
+If you were not asked to create them then leave them as is.
+
+bear in mind making it work on Mac as well:
+
+Not cross platform:
+sed -i "s/MANAGED-IDENTITY-NAME/$MANAGED_IDENTITY_NAME/g" script.sql
+
+Works cross platform (ie for Mac)
+sed -i.bak "s/MANAGED-IDENTITY-NAME/$MANAGED_IDENTITY_NAME/g" script.sql && rm -f script.sql.bak
 
 also update the deploy.sh file to add this:
 
