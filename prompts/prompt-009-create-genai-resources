@@ -5,6 +5,15 @@ Cognitive Search (AI Search) resources you create so that all these services can
 use low cost S0 SKUs where possible (for Azure Open AI and Cognitivie services) 
 and always use the "GPT-4o" model in "Sweden" even if the resrouce group is "UKSOUTH" do not use any other models
 
+use capacity of 8 as below:
+
+sku: {
+    name: 'Standard'
+    capacity: 8
+  }
+
+make sure the azureopenai and aisearch resources have lower cased names.
+
 store the settings for these new resources in a GenAISettings file.
 
 Azure role assignments require the Principal ID (a GUID), not the resource ID. The Principal ID is available as managedIdentity.properties.principalId.
