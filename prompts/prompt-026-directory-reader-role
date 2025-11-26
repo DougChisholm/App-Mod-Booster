@@ -1,0 +1,31 @@
+when constructing the deploy.sh to deploy services and roles into azure make sure to Grant Directory Reader role to SQL Server identity and Assign Directory Reader role to SQL Server identity below is an
+example of how that might look in the deploy.sh:
+
+# Grant Directory Reader role to SQL Server identity
+
+echo ""
+
+echo "Step 2b: Granting Directory Reader role to SQL Server identity..."
+
+DIRECTORY_READER_ROLE_ID=$(az rest --method GET --uri "https://graph.microsoft.com/v1.0/directoryRoles?\$filter=roleTemplateId eq '88d8e3e3-8f55-4a1e-953a-9b9898b8876b'" --headers "Content-Type=application/json" --query "value[0].id" -o tsv 2>/dev/null || true)
+ 
+if [ -z "$DIRECTORY_READER_ROLE_ID" ]; then
+
+    echo "  Activating Directory Reader role..."
+
+    DIRECTORY_READER_ROLE_ID=$(az rest --method POST --uri "https://graph.microsoft.com/v1.0/directoryRoles" --headers "Content-Type=application/json" --body "{\"roleTemplateId\": \"88d8e3e3-8f55-4a1e-953a-9b9898b8876b\"}" --query "id" -o tsv)
+
+fi
+ 
+echo "  Assigning Directory Reader role to SQL Server identity..."
+
+az rest --method POST \
+
+    --uri "https://graph.microsoft.com/v1.0/directoryRoles/${DIRECTORY_READER_ROLE_ID}/members/\$ref" \
+
+    --headers "Content-Type=application/json" \
+
+    --body "{\"@odata.id\": \"https://graph.microsoft.com/v1.0/directoryObjects/${SQL_SERVER_IDENTITY_PRINCIPAL_ID}\"}" 2>/dev/null || echo "  Role may already be assigned"
+ 
+echo "✓ Directory Reader role granted to SQL Server identity"
+ 
