@@ -2,3 +2,7 @@ create the bicep code needed to deploy an app service instance to azure in UKSOU
 use standard S1 SKU to avoid cold start when deploying and starting the site
 
 make sure all bicep files use lower case names for all azure resources not upper case ever.
+
+Place the Bicep file in `deploy-infra/modules/app-service.bicep` and ensure it can be called as a module from `deploy-infra/main.bicep`
+
+This is INFRASTRUCTURE deployment only - the Bicep should create the App Service resource, not deploy any application code.

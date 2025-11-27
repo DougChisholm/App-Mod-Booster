@@ -1,11 +1,14 @@
 create a zip file for the app code so that it can be deployed to azure in the following manner:
 
-az webapp deploy \
-  --resource-group MyRG \
-  --name MyWebApp \
-  --src-path ./app.zip
+```powershell
+az webapp deploy --resource-group $resourceGroup --name $webAppName --src-path ./app.zip
+```
 
-Also add the correct terminal command to any deployment scripts you are creating or have created to deploy it.
+This is APPLICATION deployment only - do NOT include any infrastructure deployment here.
+Place all app deployment instructions in a `deploy-app/README.md` file with the following:
+1. PowerShell variables to set (resourceGroup, webAppName)
+2. The zip creation command
+3. The az webapp deploy command
 
 Make sure app.zip or any .zip files are not excluded by the gitignore file so you can add the app.zip file to the repo for use later in the script
 

@@ -1,5 +1,7 @@
 Create the Bicep code needed to deploy an Azure SQL Database with the following security requirements:
 
+Place the Bicep file in `deploy-infra/modules/azure-sql.bicep` and ensure it can be called as a module from `deploy-infra/main.bicep`
+
 1. **Azure AD-Only Authentication (Required by Policy)**:
    - Set `azureADOnlyAuthentication: true` in the administrators configuration
    - This is a mandatory MCAPS governance policy requirement
@@ -20,19 +22,22 @@ Create the Bicep code needed to deploy an Azure SQL Database with the following 
    - Enable firewall rule for Azure services
 
 5. **Schema Import Using Azure Native Methods**:
-   - Use Azure CLI `az sql db import` command or similar native Azure tooling to import the schema
+   - Use Azure CLI `az sql db query` command to import the schema
    - The schema file is located at: `Database-Schema/Northwinds Schema.sql`
    - Do NOT rely on local Python scripts or ODBC drivers for schema import
    - The import should use Azure AD authentication
-   - Consider using Azure Deployment Scripts (Microsoft.Resources/deploymentScripts) in Bicep to run the import as part of the infrastructure deployment
-   - Alternatively, provide Azure CLI commands that can be run from Azure Cloud Shell or as part of the deployment pipeline
+   - Provide the Azure CLI commands in `deploy-infra/README.md` as a post-deployment step (NOT in a .sh script)
 
 **Schema Import Best Practices**:
+
 - Use `az sql db query` to execute the SQL file directly against the database
 - Authenticate using the Azure AD identity of the deployer
-- Example command structure:
-  ```bash
-  az sql db query --server <server-name> --database Northwind --auth-mode ActiveDirectoryIntegrated --file "Database-Schema/Northwinds Schema.sql"
+- Example PowerShell-compatible command:
+
+  ```powershell
+  az sql db query --server $sqlServerName --database Northwind --auth-type ActiveDirectoryIntegrated --query (Get-Content "Database-Schema/Northwinds Schema.sql" -Raw)
   ```
 
 **Important**: The `azureADOnlyAuthentication` must be set to `true` to comply with the "[SFI-ID4.2.2] SQL DB - Safe Secrets Standard" policy enforced by MCAPS Governance.
+
+This is INFRASTRUCTURE deployment - create the SQL resources only, application code deployment is handled separately.

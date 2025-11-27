@@ -3,3 +3,7 @@ and assign it to this app service so it can later connect to Azure SQL with this
 
 bear in mind that when using a user-assigned managed identity, the principalId property is not directly on the identity object so avoid trying output it. 
 
+Place the Bicep file in `deploy-infra/modules/managed-identity.bicep` and ensure it can be called as a module from `deploy-infra/main.bicep`
+
+This is INFRASTRUCTURE deployment - the managed identity must be created before the App Service and SQL can reference it. 
+

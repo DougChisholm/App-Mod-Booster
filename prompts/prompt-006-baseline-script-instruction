@@ -1,7 +1,29 @@
 when starting the task create a plan of what you will do and detail it with a list of checkboxes in the pull request you create and include a final taks called "Completed all tasks" which you only tick when all your work and testing is done
 
-make sure to create one summary script to deploy any infrastructure as code and also an instruction to deploy that summary script in one line in the terminal (assuming all variables in the other scripts have been set)
+## Deployment Structure Requirements
 
-if other parts of my instruction ask for scripts try to combine them sensibly into this summary so the output has separate IaC files for each service deployed to azure plus the summary script calling them all.
+Create TWO separate deployment workflows:
+
+### 1. Infrastructure Deployment (deploy-infra/)
+- Create a `main.bicep` file that orchestrates all infrastructure modules
+- Create separate Bicep modules for each Azure resource (app-service.bicep, azure-sql.bicep, managed-identity.bicep, etc.)
+- Provide native Azure CLI commands (NOT .sh or .bash scripts) to deploy the infrastructure
+- Document the CLI commands in a `deploy-infra/README.md` file with copy-paste ready commands
+- Example deployment command format:
+  ```powershell
+  az deployment group create --resource-group $resourceGroup --template-file ./deploy-infra/main.bicep --parameters @./deploy-infra/parameters.json
+  ```
+
+### 2. Application Code Deployment (deploy-app/)
+- Keep application deployment completely separate from infrastructure
+- Provide native Azure CLI or PowerShell commands to deploy application code
+- Document the CLI commands in a `deploy-app/README.md` file
+- The app deployment should assume infrastructure already exists
+
+### Script Guidelines
+- Do NOT create .sh shell scripts - use native Azure CLI commands that work in PowerShell
+- All commands must be PowerShell-compatible (use semicolons or backticks for line continuation, not backslashes)
+- Use parameters.json files for Bicep parameters rather than inline parameters where practical
+- Provide clear variable setup instructions at the top of each README
 
 make sure to use the screenshots found in the repo along with the data base schema to ensure that all APIs and functionality matches those
