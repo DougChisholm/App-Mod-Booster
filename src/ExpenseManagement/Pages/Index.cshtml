@@ -1,0 +1,152 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["ErrorMessage"] = Model.ErrorMessage;
+    ViewData["ErrorLocation"] = Model.ErrorLocation;
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="mb-3"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h1>
+        <p class="text-muted">Welcome to the Expense Management System. Track, submit, and manage your expenses.</p>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    @foreach (var summary in Model.ExpenseSummary)
+    {
+        var statusClass = summary.StatusName.ToLower() switch
+        {
+            "draft" => "status-draft",
+            "submitted" => "status-submitted",
+            "approved" => "status-approved",
+            "rejected" => "status-rejected",
+            _ => ""
+        };
+        var icon = summary.StatusName.ToLower() switch
+        {
+            "draft" => "bi-file-earmark",
+            "submitted" => "bi-send",
+            "approved" => "bi-check-circle",
+            "rejected" => "bi-x-circle",
+            _ => "bi-circle"
+        };
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card stat-card">
+                <div class="stat-value">@summary.ExpenseCount</div>
+                <div class="stat-label"><i class="bi @icon me-1"></i>@summary.StatusName</div>
+                <div class="mt-2"><span class="badge @statusClass">£@summary.TotalAmountDisplay.ToString("N2")</span></div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-lightning-fill me-2"></i>Quick Actions
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-page="/AddExpense" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Add New Expense
+                    </a>
+                    <a asp-page="/Expenses" class="btn btn-outline-primary">
+                        <i class="bi bi-list-ul me-2"></i>View All Expenses
+                    </a>
+                    <a asp-page="/Approve" class="btn btn-outline-success">
+                        <i class="bi bi-check2-square me-2"></i>Review Pending Approvals (@Model.PendingCount)
+                    </a>
+                    <a asp-page="/Chat" class="btn btn-outline-info">
+                        <i class="bi bi-chat-dots me-2"></i>AI Assistant
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-pie-chart-fill me-2"></i>Expenses by Category
+            </div>
+            <div class="card-body">
+                @if (Model.CategorySummary.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var cat in Model.CategorySummary)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-tag me-2"></i>@cat.CategoryName</span>
+                                <span class="badge bg-primary rounded-pill">£@cat.TotalAmountDisplay.ToString("N2")</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted text-center mb-0">No expense data available</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Expenses -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-clock-history me-2"></i>Recent Expenses</span>
+                <a asp-page="/Expenses" class="btn btn-sm btn-light">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.RecentExpenses.Any())
+                            {
+                                @foreach (var expense in Model.RecentExpenses)
+                                {
+                                    var statusClass = expense.StatusName.ToLower() switch
+                                    {
+                                        "draft" => "status-draft",
+                                        "submitted" => "status-submitted",
+                                        "approved" => "status-approved",
+                                        "rejected" => "status-rejected",
+                                        _ => ""
+                                    };
+                                    <tr>
+                                        <td>@expense.ExpenseDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@expense.CategoryName</td>
+                                        <td>@(expense.Description ?? "-")</td>
+                                        <td><strong>£@expense.AmountDisplay.ToString("N2")</strong></td>
+                                        <td><span class="badge @statusClass">@expense.StatusName</span></td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">No expenses found</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

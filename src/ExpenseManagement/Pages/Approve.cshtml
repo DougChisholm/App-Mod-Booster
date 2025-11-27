@@ -1,0 +1,97 @@
+@page
+@model ApproveModel
+@{
+    ViewData["Title"] = "Approve Expenses";
+    ViewData["ErrorMessage"] = Model.ErrorMessage;
+    ViewData["ErrorLocation"] = Model.ErrorLocation;
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="mb-3"><i class="bi bi-check-circle me-2"></i>Approve Expenses</h1>
+        <p class="text-muted">Pending expenses waiting for review</p>
+    </div>
+</div>
+
+<!-- Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Filter:</label>
+                <input type="text" class="form-control" name="search" value="@Model.SearchTerm" placeholder="Search...">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Reviewer:</label>
+                <select class="form-select" name="reviewerId">
+                    @foreach (var manager in Model.Managers)
+                    {
+                        <option value="@manager.UserId" selected="@(Model.ReviewerId == manager.UserId)">@manager.UserName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Pending Expenses -->
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-hourglass-split me-2"></i>Pending Expenses
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Submitted By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.PendingExpenses.Any())
+                    {
+                        @foreach (var expense in Model.PendingExpenses)
+                        {
+                            <tr>
+                                <td>@expense.ExpenseDate.ToString("dd/MM/yyyy")</td>
+                                <td>@expense.CategoryName</td>
+                                <td>@(expense.Description ?? "-")</td>
+                                <td><strong>£@expense.AmountDisplay.ToString("N2")</strong></td>
+                                <td>@expense.UserName</td>
+                                <td>
+                                    <form method="post" asp-page-handler="Approve" asp-route-id="@expense.ExpenseId" asp-route-reviewerId="@Model.ReviewerId" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Approve">
+                                            <i class="bi bi-check-lg me-1"></i>Approve
+                                        </button>
+                                    </form>
+                                    <form method="post" asp-page-handler="Reject" asp-route-id="@expense.ExpenseId" asp-route-reviewerId="@Model.ReviewerId" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Reject" onclick="return confirm('Are you sure you want to reject this expense?')">
+                                            <i class="bi bi-x-lg me-1"></i>Reject
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="bi bi-check-circle-fill text-success fs-1 d-block mb-2"></i>
+                                No pending expenses to review
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

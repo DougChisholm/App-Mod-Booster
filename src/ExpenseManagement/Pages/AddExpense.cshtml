@@ -1,0 +1,99 @@
+@page
+@model AddExpenseModel
+@{
+    ViewData["Title"] = "Add Expense";
+    ViewData["ErrorMessage"] = Model.ErrorMessage;
+    ViewData["ErrorLocation"] = Model.ErrorLocation;
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="mb-3"><i class="bi bi-plus-circle me-2"></i>Add Expense</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-pencil-square me-2"></i>New Expense Details
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Amount (£):</label>
+                        <input type="number" step="0.01" min="0.01" class="form-control" asp-for="Amount" required>
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date:</label>
+                        <input type="date" class="form-control" asp-for="ExpenseDate" required>
+                        <span asp-validation-for="ExpenseDate" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category:</label>
+                        <select class="form-select" asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories, "CategoryId", "CategoryName"))" required>
+                            <option value="">Select a category...</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description:</label>
+                        <textarea class="form-control" asp-for="Description" rows="3" placeholder="Enter expense description..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">User:</label>
+                        <select class="form-select" asp-for="UserId" asp-items="@(new SelectList(Model.Users, "UserId", "UserName"))" required>
+                            <option value="">Select user...</option>
+                        </select>
+                        <span asp-validation-for="UserId" class="text-danger"></span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-2"></i>Submit
+                        </button>
+                        <a asp-page="/Expenses" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Expenses
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-info-circle me-2"></i>Instructions
+            </div>
+            <div class="card-body">
+                <h6>How to add an expense:</h6>
+                <ol>
+                    <li>Enter the expense amount in GBP</li>
+                    <li>Select the date the expense occurred</li>
+                    <li>Choose the appropriate category</li>
+                    <li>Add a brief description</li>
+                    <li>Select the user submitting the expense</li>
+                    <li>Click Submit to create the expense as a draft</li>
+                </ol>
+                <hr>
+                <h6>Available Categories:</h6>
+                <ul class="list-unstyled">
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <li><i class="bi bi-tag me-1 text-primary"></i>@cat.CategoryName</li>
+                    }
+                </ul>
+                <hr>
+                <p class="text-muted mb-0">
+                    <i class="bi bi-lightbulb me-1"></i>
+                    <small>New expenses are saved as "Draft". You can submit them for approval from the Expenses page.</small>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

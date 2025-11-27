@@ -1,0 +1,30 @@
+# Build outputs
+bin/
+obj/
+publish/
+
+# IDE files
+.vs/
+.vscode/
+*.user
+*.suo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# NuGet
+*.nupkg
+packages/
+
+# Test results
+TestResults/
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.bak
+
+# Note: app.zip is intentionally NOT excluded as it's needed for deployment
