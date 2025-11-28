@@ -6,7 +6,8 @@ Create TWO separate deployment workflows:
 
 ### 1. Infrastructure Deployment (deploy-infra/)
 - Create a `main.bicep` file that orchestrates all infrastructure modules
-- Create separate Bicep modules for each Azure resource (app-service.bicep, azure-sql.bicep, managed-identity.bicep, etc.)
+- Create separate Bicep modules for each Azure resource (app-service.bicep, azure-sql.bicep, managed-identity.bicep, monitoring.bicep etc.)
+- Ensure all Bicep code is validated before deployment
 - Provide native Azure CLI commands (NOT .sh or .bash scripts) to deploy the infrastructure
 - Document the CLI commands in a `deploy-infra/README.md` file with copy-paste ready commands
 - Example deployment command format:
