@@ -1,0 +1,173 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Expenses";
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>⚠️ Notice:</strong> @Model.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-receipt me-2"></i>Expenses
+            </h1>
+        </div>
+        <div class="col-auto">
+            <a href="/Expenses/Create" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-lg me-2"></i>Add Expense
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="filter" class="col-form-label fw-bold">Filter:</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="filter" name="filter" 
+                           placeholder="Search by description, category, or user..." 
+                           value="@Model.FilterTerm">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-search me-1"></i>Search
+                    </button>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.FilterTerm))
+                {
+                    <div class="col-auto">
+                        <a href="/Index" class="btn btn-outline-secondary">Clear</a>
+                    </div>
+                }
+            </form>
+        </div>
+    </div>
+
+    <!-- Expenses Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th class="text-end">Amount</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Expenses.Any())
+                        {
+                            @foreach (var expense in Model.Expenses)
+                            {
+                                <tr>
+                                    <td>@expense.FormattedDate</td>
+                                    <td>
+                                        <span class="badge bg-secondary">@expense.CategoryName</span>
+                                    </td>
+                                    <td class="text-end fw-bold">@expense.FormattedAmount</td>
+                                    <td>
+                                        @{
+                                            var statusClass = expense.StatusName switch
+                                            {
+                                                "Draft" => "bg-secondary",
+                                                "Submitted" => "bg-warning text-dark",
+                                                "Approved" => "bg-success",
+                                                "Rejected" => "bg-danger",
+                                                _ => "bg-info"
+                                            };
+                                        }
+                                        <span class="badge @statusClass">@expense.StatusName</span>
+                                    </td>
+                                    <td class="text-truncate" style="max-width: 200px;" title="@expense.Description">
+                                        @expense.Description
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="/Expenses/Edit/@expense.ExpenseId" class="btn btn-outline-primary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            @if (expense.StatusName == "Draft")
+                                            {
+                                                <form method="post" asp-page-handler="Submit" class="d-inline">
+                                                    <input type="hidden" name="expenseId" value="@expense.ExpenseId" />
+                                                    <button type="submit" class="btn btn-outline-success" title="Submit for Approval">
+                                                        <i class="bi bi-send"></i>
+                                                    </button>
+                                                </form>
+                                                <form method="post" asp-page-handler="Delete" class="d-inline" 
+                                                      onsubmit="return confirm('Are you sure you want to delete this expense?');">
+                                                    <input type="hidden" name="expenseId" value="@expense.ExpenseId" />
+                                                    <button type="submit" class="btn btn-outline-danger" title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">
+                                    <i class="bi bi-inbox display-6 d-block mb-2"></i>
+                                    No expenses found.
+                                    <a href="/Expenses/Create" class="btn btn-link">Add your first expense</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <i class="bi bi-plus-circle display-4 text-primary mb-3"></i>
+                    <h5>Add Expense</h5>
+                    <p class="text-muted small">Submit a new expense claim</p>
+                    <a href="/Expenses/Create" class="btn btn-primary">Add New</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <i class="bi bi-check2-square display-4 text-success mb-3"></i>
+                    <h5>Approve Expenses</h5>
+                    <p class="text-muted small">Review pending expense claims</p>
+                    <a href="/Approval/Index" class="btn btn-success">View Pending</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <i class="bi bi-chat-dots display-4 text-info mb-3"></i>
+                    <h5>Chat Assistant</h5>
+                    <p class="text-muted small">Ask questions about expenses</p>
+                    <a href="/Chat" class="btn btn-info">Open Chat</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

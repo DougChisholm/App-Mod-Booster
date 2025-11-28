@@ -1,0 +1,40 @@
+# Build outputs
+bin/
+obj/
+publish/
+
+# IDE files
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Dependencies
+node_modules/
+
+# Local settings
+appsettings.Development.json
+*.local.json
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.bak
+.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+
+# Keep app.zip for deployment (don't ignore it)
+# !app.zip

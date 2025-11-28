@@ -1,0 +1,80 @@
+@page
+@model ExpenseManagement.Pages.Expenses.CreateModel
+@{
+    ViewData["Title"] = "Add Expense";
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error:</strong> @Model.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-plus-circle me-2"></i>Add Expense
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="Amount" class="form-label fw-bold">Amount (£)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">£</span>
+                                <input type="number" class="form-control form-control-lg" id="Amount" 
+                                       asp-for="Input.Amount" step="0.01" min="0.01" required
+                                       placeholder="0.00">
+                            </div>
+                            <span asp-validation-for="Input.Amount" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ExpenseDate" class="form-label fw-bold">Date</label>
+                            <input type="date" class="form-control form-control-lg" id="ExpenseDate" 
+                                   asp-for="Input.ExpenseDate" required>
+                            <span asp-validation-for="Input.ExpenseDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="CategoryId" class="form-label fw-bold">Category</label>
+                            <select class="form-select form-select-lg" id="CategoryId" asp-for="Input.CategoryId" required>
+                                <option value="">Select a category...</option>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.CategoryId">@category.CategoryName</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Input.CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="Description" class="form-label fw-bold">Description</label>
+                            <textarea class="form-control" id="Description" asp-for="Input.Description" 
+                                      rows="3" placeholder="Enter expense description..."></textarea>
+                            <span asp-validation-for="Input.Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-lg me-2"></i>Submit
+                            </button>
+                            <a href="/Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

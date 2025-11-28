@@ -1,0 +1,124 @@
+@page
+@model ExpenseManagement.Pages.Approval.IndexModel
+@{
+    ViewData["Title"] = "Approve Expenses";
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>⚠️ Notice:</strong> @Model.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-check2-square me-2"></i>Approve Expenses
+            </h1>
+            <p class="text-muted">Pending expenses awaiting approval</p>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="filter" class="col-form-label fw-bold">Filter:</label>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="filter" name="filter" 
+                           placeholder="Search pending expenses..." 
+                           value="@Model.FilterTerm">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-search me-1"></i>Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pending Expenses Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th class="text-end">Amount</th>
+                            <th>Submitted By</th>
+                            <th>Description</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.PendingExpenses.Any())
+                        {
+                            @foreach (var expense in Model.PendingExpenses)
+                            {
+                                <tr>
+                                    <td>@expense.FormattedDate</td>
+                                    <td>
+                                        <span class="badge bg-secondary">@expense.CategoryName</span>
+                                    </td>
+                                    <td class="text-end fw-bold">@expense.FormattedAmount</td>
+                                    <td>@expense.UserName</td>
+                                    <td class="text-truncate" style="max-width: 200px;" title="@expense.Description">
+                                        @expense.Description
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <form method="post" asp-page-handler="Approve" class="d-inline">
+                                                <input type="hidden" name="expenseId" value="@expense.ExpenseId" />
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="bi bi-check-lg me-1"></i>Approve
+                                                </button>
+                                            </form>
+                                            <form method="post" asp-page-handler="Reject" class="d-inline" 
+                                                  onsubmit="return confirm('Are you sure you want to reject this expense?');">
+                                                <input type="hidden" name="expenseId" value="@expense.ExpenseId" />
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="bi bi-x-lg me-1"></i>Reject
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">
+                                    <i class="bi bi-check-circle display-6 d-block mb-2 text-success"></i>
+                                    No pending expenses to approve.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="/Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Back to Expenses
+        </a>
+    </div>
+</div>

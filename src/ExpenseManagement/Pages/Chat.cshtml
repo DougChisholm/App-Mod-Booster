@@ -1,0 +1,294 @@
+@page
+@model ExpenseManagement.Pages.ChatModel
+@{
+    ViewData["Title"] = "Chat Assistant";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="bi bi-chat-dots me-2"></i>Expense Assistant
+            </h1>
+            <p class="text-muted">
+                Ask questions about expenses, approvals, and more
+                @if (!Model.IsAIEnabled)
+                {
+                    <span class="badge bg-warning text-dark ms-2">Demo Mode - GenAI not deployed</span>
+                }
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <span>
+                        <i class="bi bi-robot me-2"></i>Chat
+                    </span>
+                    @if (Model.IsAIEnabled)
+                    {
+                        <span class="badge bg-success">AI Enabled</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Demo Mode</span>
+                    }
+                </div>
+                <div class="card-body chat-container" id="chatContainer" style="height: 400px; overflow-y: auto;">
+                    <div id="chatMessages">
+                        <!-- Welcome message -->
+                        <div class="chat-message bot-message">
+                            <div class="message-content">
+                                <strong>Expense Assistant</strong>
+                                <p>Hello! I'm your expense management assistant. I can help you with:</p>
+                                <ul>
+                                    <li>Viewing and searching expenses</li>
+                                    <li>Checking pending approvals</li>
+                                    <li>Getting expense category information</li>
+                                    <li>Approving or rejecting expenses (as a manager)</li>
+                                </ul>
+                                <p>How can I help you today?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <form id="chatForm" class="d-flex gap-2">
+                        <input type="text" class="form-control" id="userMessage" 
+                               placeholder="Type your message..." autofocus>
+                        <button type="submit" class="btn btn-primary" id="sendButton">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <i class="bi bi-lightbulb me-2"></i>Suggestions
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted">Try asking:</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-secondary btn-sm text-start suggestion-btn" 
+                                data-message="Show me all expenses">
+                            📋 Show me all expenses
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm text-start suggestion-btn" 
+                                data-message="What expenses are pending approval?">
+                            ⏳ What expenses are pending approval?
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm text-start suggestion-btn" 
+                                data-message="What expense categories are available?">
+                            📁 What expense categories are available?
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm text-start suggestion-btn" 
+                                data-message="Find travel expenses">
+                            🔍 Find travel expenses
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <i class="bi bi-info-circle me-2"></i>Quick Links
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="/Index" class="list-group-item list-group-item-action">
+                            <i class="bi bi-list-ul me-2"></i>View Expenses
+                        </a>
+                        <a href="/Expenses/Create" class="list-group-item list-group-item-action">
+                            <i class="bi bi-plus-circle me-2"></i>Add Expense
+                        </a>
+                        <a href="/Approval/Index" class="list-group-item list-group-item-action">
+                            <i class="bi bi-check2-square me-2"></i>Approve Expenses
+                        </a>
+                        <a href="/swagger" class="list-group-item list-group-item-action">
+                            <i class="bi bi-code-slash me-2"></i>API Documentation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chat-message {
+        margin-bottom: 1rem;
+        display: flex;
+    }
+    
+    .user-message {
+        justify-content: flex-end;
+    }
+    
+    .user-message .message-content {
+        background-color: #0d6efd;
+        color: white;
+        border-radius: 1rem 1rem 0 1rem;
+        padding: 0.75rem 1rem;
+        max-width: 70%;
+    }
+    
+    .bot-message .message-content {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 1rem 1rem 1rem 0;
+        padding: 0.75rem 1rem;
+        max-width: 70%;
+    }
+    
+    .bot-message .message-content ul,
+    .bot-message .message-content ol {
+        padding-left: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .typing-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 1rem;
+        background-color: #f8f9fa;
+        border-radius: 1rem;
+    }
+    
+    .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #6c757d;
+        animation: typing 1.4s infinite ease-in-out both;
+    }
+    
+    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+    
+    @@keyframes typing {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1); }
+    }
+</style>
+
+@section Scripts {
+<script>
+    const chatContainer = document.getElementById('chatContainer');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const userMessageInput = document.getElementById('userMessage');
+    const sendButton = document.getElementById('sendButton');
+
+    // Suggestion buttons
+    document.querySelectorAll('.suggestion-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            userMessageInput.value = btn.dataset.message;
+            chatForm.dispatchEvent(new Event('submit'));
+        });
+    });
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const message = userMessageInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        addMessage(message, 'user');
+        userMessageInput.value = '';
+        sendButton.disabled = true;
+
+        // Show typing indicator
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'chat-message bot-message';
+        typingDiv.innerHTML = `
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        `;
+        chatMessages.appendChild(typingDiv);
+        scrollToBottom();
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await response.json();
+            
+            // Remove typing indicator
+            typingDiv.remove();
+            
+            // Add bot response
+            addMessage(data.message, 'bot');
+        } catch (error) {
+            typingDiv.remove();
+            addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+        }
+
+        sendButton.disabled = false;
+        userMessageInput.focus();
+    });
+
+    function addMessage(text, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${type}-message`;
+        
+        // Format the message content
+        const formattedText = formatMessage(text);
+        
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                ${type === 'bot' ? '<strong>Expense Assistant</strong><br>' : ''}
+                ${formattedText}
+            </div>
+        `;
+        
+        chatMessages.appendChild(messageDiv);
+        scrollToBottom();
+    }
+
+    function formatMessage(text) {
+        // Escape HTML first
+        let escaped = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        
+        // Apply markdown-style formatting
+        // Bold
+        escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // Code blocks
+        escaped = escaped.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+        escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+        
+        // Numbered lists
+        escaped = escaped.replace(/^(\d+)\.\s+(.*)$/gm, '<li>$2</li>');
+        escaped = escaped.replace(/(<li>.*<\/li>)+/g, '<ol>$&</ol>');
+        
+        // Bullet lists
+        escaped = escaped.replace(/^[-*]\s+(.*)$/gm, '<li>$1</li>');
+        
+        // Line breaks
+        escaped = escaped.replace(/\n/g, '<br>');
+        
+        // Horizontal rules
+        escaped = escaped.replace(/---/g, '<hr>');
+        
+        return escaped;
+    }
+
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+</script>
+}
