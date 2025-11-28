@@ -56,7 +56,7 @@ These steps must happen AFTER infrastructure deployment completes:
 ### Step 1: Set PowerShell Variables
 
 ```powershell
-$resourceGroup = "rg-expensemgmt-demo"
+$resourceGroup = "rg-expensemgmt-demo3"
 $location = "uksouth"
 $adminObjectId = "YOUR_AZURE_AD_OBJECT_ID"  # Replace with output from az ad signed-in-user show --query id -o tsv
 $adminLogin = "your.email@domain.com"        # Replace with your UPN
@@ -201,11 +201,6 @@ The following diagnostic settings are automatically configured:
 - Application Logs
 - Audit Logs
 - Platform Logs
-- All Metrics
-
-**Azure SQL Server**:
-- Security Audit Events
-- DevOps Operations Audit
 - All Metrics
 
 **Azure SQL Database**:

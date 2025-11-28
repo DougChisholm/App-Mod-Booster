@@ -101,30 +101,10 @@ resource existingSqlServer 'Microsoft.Sql/servers@2023-05-01-preview' existing =
   name: sqlServerName
 }
 
-// Diagnostic settings for SQL Server
-resource sqlServerDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: 'sqlserver-to-log-analytics'
-  scope: existingSqlServer
-  properties: {
-    workspaceId: logAnalyticsWorkspace.id
-    logs: [
-      {
-        category: 'SQLSecurityAuditEvents'
-        enabled: true
-      }
-      {
-        category: 'DevOpsOperationsAudit'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-      }
-    ]
-  }
-}
+// Note: SQL Server at the server level does not support diagnostic settings for logs.
+// SQLSecurityAuditEvents requires SQL Server Auditing to be enabled and configured separately.
+// DevOpsOperationsAudit is not a supported category for SQL Server diagnostic settings.
+// Database-level diagnostics (configured below) provide the necessary monitoring capabilities.
 
 // Reference existing SQL Database
 resource existingSqlDatabase 'Microsoft.Sql/servers/databases@2023-05-01-preview' existing = {

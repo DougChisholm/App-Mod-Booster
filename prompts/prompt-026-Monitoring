@@ -1,1 +1,3 @@
 Deploy Azure Monitor and ensure all resources have diagnostic settings enabled in line with best practices.  Also ensure that the activity log of the subscription and any resource groups are also logging to Azure Monitor so any deployment failures can be analysed.
+
+Important: Do not configure diagnostic settings at the SQL Server level. Categories like SQLSecurityAuditEvents and DevOpsOperationsAudit are not supported for SQL Server diagnostic settings and will cause deployment failures. Instead, configure diagnostic settings only at the SQL Database level, which supports categories like SQLInsights, QueryStoreRuntimeStatistics, Errors, Timeouts, Blocks, and Deadlocks.
