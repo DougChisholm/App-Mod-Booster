@@ -1,0 +1,50 @@
+{
+  "name": "Expense Management Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:8.0",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/azure-cli:1": {},
+    "ghcr.io/devcontainers/features/powershell:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "ms-azuretools.vscode-bicep",
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-vscode.azurecli",
+        "ms-vscode.powershell",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "humao.rest-client",
+        "EditorConfig.EditorConfig"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "pwsh",
+        "dotnet.defaultSolution": "src/ExpenseManagement/ExpenseManagement.csproj"
+      }
+    }
+  },
+
+  "postCreateCommand": "curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - && sudo add-apt-repository \"$(curl -sSL https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list)\" && sudo apt-get update && sudo apt-get install -y sqlcmd && cd src/ExpenseManagement && dotnet restore",
+
+  "forwardPorts": [5000, 5001],
+
+  "portsAttributes": {
+    "5000": {
+      "label": "HTTP",
+      "onAutoForward": "notify"
+    },
+    "5001": {
+      "label": "HTTPS",
+      "onAutoForward": "notify"
+    }
+  },
+
+  "remoteEnv": {
+    "DOTNET_WATCH_RESTART_ON_RUDE_EDIT": "true"
+  }
+}

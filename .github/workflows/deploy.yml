@@ -1,0 +1,137 @@
+# GitHub Actions workflow for deploying the Expense Management System
+# Uses OIDC federation for secure, secretless authentication to Azure
+
+name: Deploy to Azure
+
+on:
+  workflow_dispatch:
+    inputs:
+      resourceGroup:
+        description: 'Resource Group name (e.g., rg-expensemgmt-demo-YYYYMMDD)'
+        required: true
+        type: string
+      location:
+        description: 'Azure region'
+        required: true
+        default: 'uksouth'
+        type: choice
+        options:
+          - uksouth
+          - ukwest
+          - eastus
+          - westus2
+          - northeurope
+          - westeurope
+      deployGenAI:
+        description: 'Deploy GenAI resources (Azure OpenAI, AI Search)'
+        required: false
+        default: false
+        type: boolean
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+# Required for OIDC token federation
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+  AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+jobs:
+  deploy-infrastructure:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    
+    outputs:
+      webAppName: ${{ steps.infra.outputs.webAppName }}
+      resourceGroup: ${{ inputs.resourceGroup }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install go-sqlcmd
+        run: |
+          curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          sudo add-apt-repository "$(curl -sSL https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list)"
+          sudo apt-get update
+          sudo apt-get install -y sqlcmd
+          sqlcmd --version
+
+      - name: Deploy Infrastructure
+        id: infra
+        shell: pwsh
+        run: |
+          $params = @{
+            ResourceGroup = "${{ inputs.resourceGroup }}"
+            Location = "${{ inputs.location }}"
+          }
+          
+          if ("${{ inputs.deployGenAI }}" -eq "true") {
+            $params.DeployGenAI = $true
+          }
+          
+          ./deploy-infra/deploy.ps1 @params
+          
+          # Read outputs from deployment context
+          $context = Get-Content .deployment-context.json | ConvertFrom-Json
+          echo "webAppName=$($context.webAppName)" >> $env:GITHUB_OUTPUT
+
+  deploy-application:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    needs: deploy-infrastructure
+    environment: ${{ inputs.environment }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build and Publish Application
+        run: |
+          cd src/ExpenseManagement
+          dotnet restore
+          dotnet publish -c Release -o ./publish
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ needs.deploy-infrastructure.outputs.webAppName }}
+          package: src/ExpenseManagement/publish
+
+      - name: Output Application URL
+        run: |
+          echo "## Deployment Complete! 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Application URL:** https://${{ needs.deploy-infrastructure.outputs.webAppName }}.azurewebsites.net/Index" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Swagger API:** https://${{ needs.deploy-infrastructure.outputs.webAppName }}.azurewebsites.net/swagger" >> $GITHUB_STEP_SUMMARY
