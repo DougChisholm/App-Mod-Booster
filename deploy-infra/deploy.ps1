@@ -261,8 +261,12 @@ if (-not $SkipDatabaseSetup) {
         $sqlcmdPath = Get-Command sqlcmd -ErrorAction SilentlyContinue
         if ($sqlcmdPath) {
             Write-Info "Using sqlcmd..."
+            # In CI/CD, use AzCli auth to leverage the az login OIDC token
+            # In local mode, use ActiveDirectoryDefault which works with user credentials
+            $authMethod = if ($IsCI) { "ActiveDirectoryAzCli" } else { "ActiveDirectoryDefault" }
+            Write-Info "Authentication method: $authMethod"
             try {
-                sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=ActiveDirectoryDefault" -i $schemaFile
+                sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=$authMethod" -i $schemaFile
                 Write-Success "Database schema imported"
             } catch {
                 Write-Warning "sqlcmd failed, this might be expected if schema already exists"
@@ -279,21 +283,24 @@ if (-not $SkipDatabaseSetup) {
     if ($sqlcmdPath) {
         Write-Info "Setting up database user for: $managedIdentityName"
         
+        # In CI/CD, use AzCli auth to leverage the az login OIDC token
+        $authMethod = if ($IsCI) { "ActiveDirectoryAzCli" } else { "ActiveDirectoryDefault" }
+        
         try {
             # Drop user if exists, then recreate
-            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=ActiveDirectoryDefault" `
+            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=$authMethod" `
                 -Q "IF EXISTS (SELECT * FROM sys.database_principals WHERE name = '$managedIdentityName') DROP USER [$managedIdentityName];"
             
-            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=ActiveDirectoryDefault" `
+            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=$authMethod" `
                 -Q "CREATE USER [$managedIdentityName] FROM EXTERNAL PROVIDER;"
             
-            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=ActiveDirectoryDefault" `
+            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=$authMethod" `
                 -Q "ALTER ROLE db_datareader ADD MEMBER [$managedIdentityName];"
             
-            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=ActiveDirectoryDefault" `
+            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=$authMethod" `
                 -Q "ALTER ROLE db_datawriter ADD MEMBER [$managedIdentityName];"
             
-            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=ActiveDirectoryDefault" `
+            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=$authMethod" `
                 -Q "GRANT EXECUTE TO [$managedIdentityName];"
             
             Write-Success "Managed identity database roles configured"
@@ -312,8 +319,12 @@ if (-not $SkipDatabaseSetup) {
         Write-Warning "Skipping stored procedures creation"
     } elseif ($sqlcmdPath) {
         Write-Info "Stored procedures file: $storedProcsFile"
+        
+        # In CI/CD, use AzCli auth to leverage the az login OIDC token
+        $authMethod = if ($IsCI) { "ActiveDirectoryAzCli" } else { "ActiveDirectoryDefault" }
+        
         try {
-            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=ActiveDirectoryDefault" -i $storedProcsFile
+            sqlcmd -S $serverFqdn -d "Northwind" "--authentication-method=$authMethod" -i $storedProcsFile
             Write-Success "Stored procedures created"
         } catch {
             Write-Warning "Failed to create stored procedures"
