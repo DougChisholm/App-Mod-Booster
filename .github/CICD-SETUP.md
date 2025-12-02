@@ -2,6 +2,24 @@
 
 This guide explains how to configure GitHub Actions for fully automated deployment of the Expense Management System to Azure using OIDC (OpenID Connect) federation - no secrets required.
 
+## What's Manual vs Automatic?
+
+| Component | Who Creates It | When |
+|-----------|---------------|------|
+| **Service Principal** | Manual (you) | One-time setup per Azure subscription |
+| **Azure Role Assignments** | Manual (you) | One-time setup per subscription |
+| **Federated Credentials** | Manual (you) | One-time setup per repository/branch |
+| **GitHub Repository Variables** | Manual (you) | One-time setup per repository |
+| **GitHub Environment** | Manual (you) | One-time setup per repository |
+| `.github/workflows/deploy.yml` | Agent (rebuild) | Generated from prompt-028 |
+| `deploy-infra/deploy.ps1` | Agent (rebuild) | Generated with CI/CD detection logic |
+| `deploy-infra/modules/*.bicep` | Agent (rebuild) | Generated with adminPrincipalType parameter |
+| `.github/CICD-SETUP.md` | Agent (rebuild) | This documentation file |
+
+### Summary
+- **You do once:** Create Service Principal, assign roles, configure GitHub repo
+- **Agent generates:** All workflow files, scripts, and Bicep templates with CI/CD support
+
 ## Prerequisites
 
 - Azure subscription with Owner or Contributor + User Access Administrator permissions
