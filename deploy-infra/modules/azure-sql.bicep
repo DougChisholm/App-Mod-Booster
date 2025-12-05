@@ -1,3 +1,5 @@
+targetScope = 'resourceGroup'
+
 @description('Location for the SQL Server')
 param location string = resourceGroup().location
 

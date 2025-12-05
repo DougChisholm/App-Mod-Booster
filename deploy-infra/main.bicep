@@ -1,3 +1,5 @@
+targetScope = 'resourceGroup'
+
 @description('Location for all resources')
 param location string = 'uksouth'
 
@@ -19,7 +21,6 @@ param deployGenAI bool = false
 
 // Deploy Managed Identity first
 module managedIdentity 'modules/managed-identity.bicep' = {
-  name: 'managedIdentityDeployment'
   params: {
     location: location
     baseName: baseName
@@ -28,7 +29,6 @@ module managedIdentity 'modules/managed-identity.bicep' = {
 
 // Deploy App Service
 module appService 'modules/app-service.bicep' = {
-  name: 'appServiceDeployment'
   params: {
     location: location
     baseName: baseName
@@ -39,7 +39,6 @@ module appService 'modules/app-service.bicep' = {
 
 // Deploy Azure SQL
 module azureSQL 'modules/azure-sql.bicep' = {
-  name: 'azureSQLDeployment'
   params: {
     location: location
     baseName: baseName
@@ -51,7 +50,6 @@ module azureSQL 'modules/azure-sql.bicep' = {
 
 // Conditionally deploy GenAI resources
 module genAI 'modules/genai.bicep' = if (deployGenAI) {
-  name: 'genAIDeployment'
   params: {
     baseName: baseName
     managedIdentityPrincipalId: managedIdentity.outputs.managedIdentityPrincipalId
@@ -60,7 +58,6 @@ module genAI 'modules/genai.bicep' = if (deployGenAI) {
 
 // Deploy Monitoring resources (Azure Monitor, Log Analytics, Application Insights)
 module monitoring 'modules/monitoring.bicep' = {
-  name: 'monitoringDeployment'
   params: {
     location: location
     baseName: baseName

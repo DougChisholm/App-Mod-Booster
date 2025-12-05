@@ -1,3 +1,5 @@
+targetScope = 'resourceGroup'
+
 @description('Location for the monitoring resources')
 param location string = resourceGroup().location
 
