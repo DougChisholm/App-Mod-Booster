@@ -9,13 +9,14 @@ Create TWO separate deployment workflows:
 This handles all Azure resource creation:
 
 - Create a `main.bicep` file that orchestrates all infrastructure modules
+- Create a `main.bicepparam` file for parameters (preferred over parameters.json for better type safety and IDE support)
 - Create separate Bicep modules for each resource type (app-service.bicep, azure-sql.bicep, managed-identity.bicep, monitoring.bicep, etc.)
 - Validate all Bicep code before deployment
 - Document deployment commands in `deploy-infra/README.md` with copy-paste ready examples
 
 Example deployment command:
 
-    az deployment group create --resource-group $resourceGroup --template-file ./deploy-infra/main.bicep --parameters @./deploy-infra/parameters.json
+    az deployment group create --resource-group $resourceGroup --template-file ./deploy-infra/main.bicep --parameters @./deploy-infra/main.bicepparam
 
 ### 2. Application Code Deployment (deploy-app/)
 
@@ -29,7 +30,7 @@ This deploys the actual application and assumes infrastructure already exists:
 
 - Do NOT create .sh shell scripts - use PowerShell-compatible commands
 - Use semicolons or backticks for line continuation, not backslashes
-- Use parameters.json files for Bicep parameters rather than inline parameters
+- Use `.bicepparam` files for Bicep parameters (not inline parameters or legacy parameters.json)
 - Provide clear variable setup instructions at the top of each README
 
 Refer to the screenshots in the repository and the database schema to ensure all APIs and functionality match the original application.

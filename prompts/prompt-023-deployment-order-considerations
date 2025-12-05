@@ -40,13 +40,34 @@ The two scripts are designed to work together without manual parameter entry bet
 
 3. Resource group reuse: Always use fresh resource group names. If a deployment fails partway through, delete the resource group before retrying.
 
-### Bicep Guidelines
+### Bicep Best Practices
 
 Use uniqueString(resourceGroup().id) to generate deterministic unique names for resources. Never use timestamps like utcNow() in variable declarations as this is not allowed in Bicep.
 
 Key considerations for Bicep templates:
 
-- The utcNow() function can only be used as a parameter default value, not in variable declarations
-- Conditional module outputs must use null-safe operators (?. and ??) to prevent errors when optional modules are not deployed
+**Naming and References:**
+
 - All resource names should be lowercase to comply with Azure naming requirements
+- Use symbolic resource references instead of string-based references (e.g., `appService.outputs.webAppId` not resource ID strings)
+- Do NOT use the `name` property on module declarations - use the symbolic name directly
+
+**Parameters:**
+
+- Use `.bicepparam` files instead of `parameters.json` for better type safety and IDE support
+- Example: `main.bicepparam` with `using './main.bicep'` at the top
+- Add descriptions to all parameters using `@description()` decorator
+
+**Conditional Resources:**
+
+- Conditional module outputs must use null-safe operators (?. and ??) to prevent errors when optional modules are not deployed
+- Example: `output openAIEndpoint string = genAI.?outputs.?openAIEndpoint ?? ''`
+
+**Functions and Variables:**
+
+- The utcNow() function can only be used as a parameter default value, not in variable declarations
+- Use `uniqueString(resourceGroup().id)` for deterministic unique names
+
+**Diagnostics:**
+
 - Do not configure diagnostic settings at the SQL Server level as categories like SQLSecurityAuditEvents are not supported - only configure diagnostics at the database level
