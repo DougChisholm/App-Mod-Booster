@@ -1,0 +1,104 @@
+@page
+@model ExpenseManagement.Pages.Expenses.ApproveModel
+@{
+    ViewData["Title"] = "Approve Expenses";
+}
+
+<div class="page-header">
+    <h1>✓ Approve Expenses</h1>
+    <p>Review and approve or reject submitted expenses.</p>
+</div>
+
+@if (TempData["SuccessMessage"] is string success)
+{
+    <div class="alert alert--success">✓ @success</div>
+}
+@if (TempData["ErrorMsg"] is string errMsg)
+{
+    <div class="alert alert--danger">⚠️ @errMsg</div>
+}
+
+<div class="card">
+    <div class="card__header">
+        <span class="card__title">Pending Expenses (@Model.PendingExpenses.Count)</span>
+        <form method="get" style="display:flex;gap:0.5rem;align-items:center">
+            <div class="search-box" style="min-width:220px">
+                <span class="search-box__icon">🔍</span>
+                <input type="text" name="filter" value="@Model.Filter"
+                       placeholder="Filter pending…" autocomplete="off" />
+            </div>
+            <button type="submit" class="btn btn--secondary btn--sm">Filter</button>
+            @if (!string.IsNullOrEmpty(Model.Filter))
+            {
+                <a asp-page="/Expenses/Approve" class="btn btn--secondary btn--sm">Clear</a>
+            }
+        </form>
+    </div>
+
+    @if (Model.PendingExpenses.Count == 0)
+    {
+        <div class="empty-state">
+            <div class="empty-state__icon">🎉</div>
+            <p>No pending expenses. All caught up!</p>
+        </div>
+    }
+    else
+    {
+        <p class="form-text" style="margin-bottom:1rem">
+            ℹ️ Enter your User ID as the reviewer. In production this would use the authenticated user's ID.
+        </p>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Submitted By</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Submitted At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model.PendingExpenses)
+                    {
+                        <tr>
+                            <td>@e.ExpenseDate.ToString("dd/MM/yyyy")</td>
+                            <td>@e.UserName</td>
+                            <td>@e.CategoryName</td>
+                            <td>@(e.Description ?? "–")</td>
+                            <td style="font-weight:600;font-variant-numeric:tabular-nums">£@e.AmountGBP.ToString("N2")</td>
+                            <td>@(e.SubmittedAt?.ToString("dd/MM/yyyy HH:mm") ?? "–")</td>
+                            <td>
+                                <div style="display:flex;gap:0.375rem;align-items:center">
+                                    <input type="number" id="reviewer_@e.ExpenseId"
+                                           value="2" min="1" style="width:60px"
+                                           class="form-control" title="Reviewer User ID" />
+                                    <form method="post" asp-page-handler="Approve" style="display:inline">
+                                        <input type="hidden" name="expenseId"      value="@e.ExpenseId" />
+                                        <input type="hidden" name="filter"         value="@Model.Filter" />
+                                        <input type="hidden" id="rv_a_@e.ExpenseId" name="reviewerUserId" value="2" />
+                                        <button type="submit" class="btn btn--success btn--sm"
+                                                onclick="document.getElementById('rv_a_@e.ExpenseId').value=document.getElementById('reviewer_@e.ExpenseId').value">
+                                            Approve
+                                        </button>
+                                    </form>
+                                    <form method="post" asp-page-handler="Reject" style="display:inline">
+                                        <input type="hidden" name="expenseId"      value="@e.ExpenseId" />
+                                        <input type="hidden" name="filter"         value="@Model.Filter" />
+                                        <input type="hidden" id="rv_r_@e.ExpenseId" name="reviewerUserId" value="2" />
+                                        <button type="submit" class="btn btn--danger btn--sm"
+                                                onclick="document.getElementById('rv_r_@e.ExpenseId').value=document.getElementById('reviewer_@e.ExpenseId').value; return confirm('Reject this expense?')">
+                                            Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

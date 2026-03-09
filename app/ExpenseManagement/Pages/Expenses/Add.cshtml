@@ -1,0 +1,91 @@
+@page
+@model ExpenseManagement.Pages.Expenses.AddModel
+@{
+    ViewData["Title"] = "Add Expense";
+}
+
+<div class="page-header">
+    <h1>＋ Add Expense</h1>
+    <p>Record a new business expense. It will be saved as a <strong>Draft</strong> until submitted for approval.</p>
+</div>
+
+@if (TempData["SuccessMessage"] is string success)
+{
+    <div class="alert alert--success">✓ @success</div>
+}
+
+<div class="card" style="max-width:600px">
+    <div class="card__header">
+        <span class="card__title">Expense Details</span>
+        <a asp-page="/Index" class="btn btn--secondary btn--sm">← Back</a>
+    </div>
+
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert--danger" style="display:@(ViewData.ModelState.IsValid ? "none" : "block")"></div>
+
+        <!-- Submitted by -->
+        <div class="form-group">
+            <label asp-for="Input.UserId" class="form-label form-label--required">Submitted By</label>
+            <select asp-for="Input.UserId" asp-items="Model.Users" class="form-control">
+                <option value="">— Select user —</option>
+            </select>
+            <span asp-validation-for="Input.UserId" class="form-text" style="color:var(--danger)"></span>
+        </div>
+
+        <!-- Amount -->
+        <div class="form-group">
+            <label class="form-label form-label--required">Amount (£)</label>
+            <div class="input-prefix">
+                <span class="input-prefix__symbol">£</span>
+                <input type="number" id="amountGbp" name="amountGbp"
+                       class="form-control" placeholder="0.00" min="0.01" step="0.01"
+                       required autocomplete="off" />
+            </div>
+            <p class="form-text">Enter in pounds (e.g. 12.50). Stored as pence internally.</p>
+            <!-- Hidden field in pence -->
+            <input type="hidden" asp-for="Input.AmountMinor" id="amountMinor" />
+        </div>
+
+        <!-- Date -->
+        <div class="form-group">
+            <label asp-for="Input.ExpenseDate" class="form-label form-label--required">Expense Date</label>
+            <input asp-for="Input.ExpenseDate" type="date" class="form-control"
+                   value="@Model.Input.ExpenseDate.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="Input.ExpenseDate" class="form-text" style="color:var(--danger)"></span>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+            <label asp-for="Input.CategoryId" class="form-label form-label--required">Category</label>
+            <select asp-for="Input.CategoryId" asp-items="Model.Categories" class="form-control">
+                <option value="">— Select category —</option>
+            </select>
+            <span asp-validation-for="Input.CategoryId" class="form-text" style="color:var(--danger)"></span>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label asp-for="Input.Description" class="form-label">Description</label>
+            <textarea asp-for="Input.Description" class="form-control"
+                      placeholder="Brief description of the expense…" rows="3"></textarea>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem">
+            <a asp-page="/Index" class="btn btn--secondary">Cancel</a>
+            <button type="submit" class="btn btn--primary">Save as Draft</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+// Convert £ input to pence for the hidden field before submit
+const gbpInput   = document.getElementById('amountGbp');
+const minorInput = document.getElementById('amountMinor');
+document.querySelector('form').addEventListener('submit', function() {
+    const gbpVal = parseFloat(gbpInput.value) || 0;
+    minorInput.value = Math.round(gbpVal * 100);
+});
+</script>
+}

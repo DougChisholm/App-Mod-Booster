@@ -1,0 +1,38 @@
+# .gitignore for Expense Management Modernisation
+
+# .NET build artifacts
+**/bin/
+**/obj/
+**/publish/
+*.user
+*.suo
+.vs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+env/
+.env
+
+# App zip - included in repo for Azure deployment
+# app.zip is intentionally NOT excluded (prompt-005 requirement)
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Azure deployment temp files
+*.bak

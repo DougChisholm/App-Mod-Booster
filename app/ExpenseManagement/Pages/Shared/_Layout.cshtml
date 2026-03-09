@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] – Expense Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+
+    <!-- Error Banner (shown when DB errors occur, contains detail + remediation advice) -->
+    @if (ViewData["ErrorMessage"] is string errorMsg && !string.IsNullOrEmpty(errorMsg))
+    {
+        <div class="error-banner" id="errorBanner">
+            <div class="error-banner__inner">
+                <span class="error-banner__icon">⚠️</span>
+                <div class="error-banner__text">
+                    <strong>Database connection issue – showing sample data.</strong>
+                    <span class="error-banner__detail">@errorMsg</span>
+                </div>
+                <button class="error-banner__close" onclick="document.getElementById('errorBanner').style.display='none'">✕</button>
+            </div>
+        </div>
+    }
+
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <div class="navbar__brand">
+            <span class="navbar__logo">💼</span>
+            <span class="navbar__title">Expense Management</span>
+        </div>
+        <ul class="navbar__links">
+            <li><a asp-page="/Index"             class="navbar__link">Dashboard</a></li>
+            <li><a asp-page="/Expenses/Add"      class="navbar__link">Add Expense</a></li>
+            <li><a asp-page="/Expenses/Approve"  class="navbar__link">Approve</a></li>
+            <li><a asp-page="/Chat/Index"        class="navbar__link navbar__link--chat">💬 AI Assistant</a></li>
+            <li><a href="/swagger"               class="navbar__link navbar__link--api" target="_blank">API Docs</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Expense Management System &nbsp;|&nbsp; Built with .NET 8 &amp; Azure &nbsp;|&nbsp;
+            <a href="/Index" class="footer__link">View App at /Index</a>
+        </p>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

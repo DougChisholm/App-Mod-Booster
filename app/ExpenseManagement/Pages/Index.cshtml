@@ -1,0 +1,136 @@
+@page
+@model ExpenseManagement.Pages.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="page-header">
+    <h1>📊 Dashboard</h1>
+    <p>Overview of all expenses. Use the navigation to add expenses or approve pending items.</p>
+</div>
+
+<!-- Stats Row -->
+<div class="stats-row">
+    <div class="stat-card stat-card--primary">
+        <div class="stat-card__label">Total Expenses</div>
+        <div class="stat-card__value">@Model.TotalCount</div>
+        <div class="stat-card__sub">All records</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__label">Total Amount</div>
+        <div class="stat-card__value">£@Model.TotalGBP.ToString("N2")</div>
+        <div class="stat-card__sub">GBP</div>
+    </div>
+    <div class="stat-card stat-card--warning">
+        <div class="stat-card__label">Pending Approval</div>
+        <div class="stat-card__value">@Model.PendingCount</div>
+        <div class="stat-card__sub">Submitted</div>
+    </div>
+    <div class="stat-card stat-card--success">
+        <div class="stat-card__label">Approved</div>
+        <div class="stat-card__value">@Model.ApprovedCount</div>
+        <div class="stat-card__sub">Expenses</div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="toolbar" style="margin-bottom:1.5rem">
+    <a asp-page="/Expenses/Add"     class="btn btn--primary">＋ Add Expense</a>
+    <a asp-page="/Expenses/Approve" class="btn btn--secondary">✓ Approve Expenses</a>
+    <a asp-page="/Chat/Index"       class="btn btn--secondary">💬 AI Assistant</a>
+</div>
+
+<!-- Expenses Table -->
+<div class="card">
+    <div class="card__header">
+        <span class="card__title">All Expenses</span>
+        <div style="display:flex;gap:0.5rem;align-items:center">
+            <form method="get" style="display:flex;gap:0.5rem;align-items:center">
+                <div class="search-box" style="min-width:220px">
+                    <span class="search-box__icon">🔍</span>
+                    <input type="text" name="filter" value="@Model.Filter"
+                           placeholder="Filter expenses…" autocomplete="off" />
+                </div>
+                <select name="status" class="form-control" style="width:auto">
+                    <option value="">All Statuses</option>
+                    <option value="Draft"     selected="@(Model.StatusFilter=="Draft"    )">Draft</option>
+                    <option value="Submitted" selected="@(Model.StatusFilter=="Submitted")">Submitted</option>
+                    <option value="Approved"  selected="@(Model.StatusFilter=="Approved" )">Approved</option>
+                    <option value="Rejected"  selected="@(Model.StatusFilter=="Rejected" )">Rejected</option>
+                </select>
+                <button type="submit" class="btn btn--secondary btn--sm">Filter</button>
+                @if (!string.IsNullOrEmpty(Model.Filter) || !string.IsNullOrEmpty(Model.StatusFilter))
+                {
+                    <a asp-page="/Index" class="btn btn--secondary btn--sm">Clear</a>
+                }
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Expenses.Count == 0)
+    {
+        <div class="empty-state">
+            <div class="empty-state__icon">📭</div>
+            <p>No expenses found. <a asp-page="/Expenses/Add" class="btn btn--primary btn--sm" style="margin-top:0.5rem">Add your first expense</a></p>
+        </div>
+    }
+    else
+    {
+        <div class="table-wrapper">
+            <table id="expensesTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Submitted By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model.Expenses)
+                    {
+                        <tr>
+                            <td>@e.ExpenseDate.ToString("dd/MM/yyyy")</td>
+                            <td>@e.CategoryName</td>
+                            <td>@(e.Description ?? "–")</td>
+                            <td style="font-weight:600;font-variant-numeric:tabular-nums">£@e.AmountGBP.ToString("N2")</td>
+                            <td>
+                                <span class="badge badge--@e.StatusName.ToLower()">@e.StatusName</span>
+                            </td>
+                            <td>@e.UserName</td>
+                            <td>
+                                @if (e.StatusName == "Draft")
+                                {
+                                    <form method="post" action="/api/expenses/@e.ExpenseId/submit?userId=@e.UserId" style="display:inline">
+                                        <button type="button" class="btn btn--secondary btn--sm"
+                                                onclick="submitExpense(@e.ExpenseId, @e.UserId)">
+                                            Submit
+                                        </button>
+                                    </form>
+                                }
+                                @if (e.StatusName == "Submitted")
+                                {
+                                    <a asp-page="/Expenses/Approve" class="btn btn--success btn--sm">Review</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+async function submitExpense(expenseId, userId) {
+    if (!confirm('Submit this expense for approval?')) return;
+    const resp = await fetch(`/api/expenses/${expenseId}/submit?userId=${userId}`, { method: 'POST' });
+    if (resp.ok) location.reload();
+    else alert('Could not submit expense. Please try again.');
+}
+</script>
+}

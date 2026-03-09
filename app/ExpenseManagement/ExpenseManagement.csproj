@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ExpenseManagement</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Azure SQL with Managed Identity -->
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <!-- Azure Identity for DefaultAzureCredential / ManagedIdentityCredential -->
+    <PackageReference Include="Azure.Identity" Version="1.13.1" />
+    <!-- Azure OpenAI for GenAI chat -->
+    <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0" />
+    <!-- Swagger / OpenAPI -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
+    <!-- Razor Pages is included in Microsoft.NET.Sdk.Web -->
+  </ItemGroup>
+
+</Project>

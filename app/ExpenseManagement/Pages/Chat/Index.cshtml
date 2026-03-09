@@ -1,0 +1,43 @@
+@page
+@model ExpenseManagement.Pages.Chat.IndexModel
+@{
+    ViewData["Title"] = "AI Assistant";
+}
+
+<div class="page-header">
+    <h1>💬 AI Assistant</h1>
+    <p>Ask anything about your expenses in natural language. The assistant can list, add, approve or reject expenses for you.</p>
+</div>
+
+<div class="chat-container">
+    <div class="chat-messages" id="chatMessages">
+        <!-- Welcome message -->
+        <div class="chat-bubble chat-bubble--assistant">
+            <div class="chat-bubble__avatar">🤖</div>
+            <div class="chat-bubble__content">
+                👋 Hi! I'm your Expense Management AI Assistant.<br><br>
+                I can help you:
+                <ul>
+                    <li>List and filter your expenses</li>
+                    <li>Check which expenses are pending approval</li>
+                    <li>Add new expense records</li>
+                    <li>Approve or reject submitted expenses</li>
+                    <li>Show expense categories and users</li>
+                </ul>
+                How can I help you today?
+            </div>
+        </div>
+    </div>
+
+    <form id="chatForm" class="chat-input-bar" autocomplete="off">
+        <textarea id="chatInput" rows="1"
+                  placeholder="Ask me about your expenses… (Enter to send, Shift+Enter for new line)"></textarea>
+        <button type="submit" class="btn btn--primary">Send ↑</button>
+    </form>
+</div>
+
+<div style="margin-top:0.75rem">
+    <p class="form-text">
+        💡 Try: <em>"Show me all pending expenses"</em> · <em>"Add a £45 travel expense for user 1 today"</em> · <em>"Approve expense 1 as reviewer 2"</em>
+    </p>
+</div>
