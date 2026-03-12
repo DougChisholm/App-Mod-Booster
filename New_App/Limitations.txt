@@ -1,0 +1,53 @@
+# Limitations - Swinton Go! Insurance Rebrand
+
+## App Limitations
+
+1. **New Design Image Viewing**: Only 5 images from the New_Design folder could be
+   viewed during this session due to a tool constraint. The design was interpreted
+   from the first 5 visible images (Page 1 welcome screen, title tooltip modal,
+   address confirmation page, UK resident question page, and the Your details
+   step page). The remaining ~40 design screens (timestamped Desktop Pre Quote 
+   screenshots) were not directly viewable, so their detailed layouts were inferred
+   from the first visible screens and applied consistently across all pages.
+
+2. **Logo Rendering**: The logo.png from New_Design folder is used as-is. If the 
+   logo has a transparent background, it will display correctly on the white header.
+   No SVG fallback has been created.
+
+3. **Vehicle Lookup is a Demo Stub**: The vehicle registration lookup is hardcoded 
+   with two sample registrations (D500 NLE = VW Golf, AB12CDE = Ford Focus).
+   A real implementation would call an external DVLA/HPI API endpoint.
+
+4. **Quote Pricing is a Demo Calculation**: The quote price calculation uses a 
+   simplified internal algorithm, not a real insurance rating engine. Real pricing
+   would require integration with an insurer panel API.
+
+5. **Address Lookup**: The new design showed an address confirmation screen 
+   (39 Clovelly Drive, Peterborough). An address lookup/postcode search step was
+   not implemented in this rebrand as the legacy app did not include it, and 
+   integrating a real Royal Mail/GetAddress API was out of scope.
+
+6. **UK Resident Question**: The design showed a "Have you been a UK resident for 
+   over 5 years?" question page. This was not present in the legacy app and has 
+   not been added to keep this a pure rebrand (functionality-matching task).
+
+7. **Additional Drivers**: The additional drivers flow is stubbed out with an 
+   informational notice, matching the legacy app behaviour.
+
+8. **No Backend/API**: The app is fully standalone HTML/CSS/JS using sessionStorage.
+   No server-side processing, authentication, or persistent storage is implemented.
+
+9. **Favicon**: No favicon.ico has been created for the new brand.
+
+10. **Playwright Tests**: Playwright testing was run against the main happy-path
+    flow (index → your-car → your-cover → your_cover). Cross-browser testing
+    beyond Chromium was not performed.
+
+## Files Created
+- New_App/index.html          — Your Details (Step 1, matches Page 1 design)
+- New_App/your-car.html       — Your Car (Step 2)
+- New_App/your-cover.html     — Your Cover (Step 3)
+- New_App/your_cover.html     — Quote Result (Step 4 — last page of journey)
+- New_App/css/style.css       — Swinton Go! brand stylesheet
+- New_App/js/app.js           — Shared JavaScript (storage, vehicle lookup, pricing)
+- New_App/images/logo.png     — Swinton Go! logo (copied from New_Design/)

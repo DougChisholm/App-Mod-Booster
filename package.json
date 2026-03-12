@@ -1,0 +1,24 @@
+{
+  "name": "app-mod-booster",
+  "version": "1.0.0",
+  "description": "![Header image](https://github.com/DougChisholm/App-Mod-Booster/blob/main/repo-header-booster.png)",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DougChisholm/App-Mod-Booster.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/DougChisholm/App-Mod-Booster/issues"
+  },
+  "homepage": "https://github.com/DougChisholm/App-Mod-Booster#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

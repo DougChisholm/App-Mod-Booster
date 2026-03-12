@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Car - Swinton Go! Insurance</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-step="2">
+
+    <!-- Header -->
+    <header class="page-header">
+        <div class="page-header__wrapper">
+            <a href="index.html" class="page-header__logo" aria-label="Swinton Go! Insurance home">
+                <img src="images/logo.png" alt="Swinton Go! Insurance">
+            </a>
+            <nav class="progress-nav" aria-label="Quote progress">
+                <div class="progress-step progress-step--done">
+                    <div class="progress-step__dot"></div>
+                    <div class="progress-step__line"></div>
+                    <span class="progress-step__label">Your details</span>
+                </div>
+                <div class="progress-step progress-step--active">
+                    <div class="progress-step__dot"></div>
+                    <div class="progress-step__line"></div>
+                    <span class="progress-step__label">Your car</span>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-step__dot"></div>
+                    <div class="progress-step__line"></div>
+                    <span class="progress-step__label">Your cover</span>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-step__dot"></div>
+                    <span class="progress-step__label">Quote</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+
+        <!-- Registration lookup panel -->
+        <div id="panel-reg-lookup">
+            <div class="question-page">
+                <div class="question-page__breadcrumb">About your car</div>
+                <div class="question-page__heading">Enter your registration number</div>
+
+                <div class="reg-plate-wrapper" style="margin-bottom:16px;" aria-label="Registration plate input">
+                    <div class="reg-plate-badge">
+                        <span class="eu-stars">&#9733;&#9733;&#9733;</span>
+                        <span>GB</span>
+                    </div>
+                    <input class="reg-plate-input" type="text" id="reg-input" maxlength="8"
+                           placeholder="D500 NLE" autocomplete="off" spellcheck="false"
+                           aria-label="Vehicle registration number">
+                </div>
+
+                <div id="lookup-spinner" style="display:none;" aria-live="polite">
+                    <div class="loading-overlay">
+                        <div class="spinner"></div>
+                        <p style="color:var(--text-muted);font-size:15px;">Looking up your vehicle&hellip;</p>
+                    </div>
+                </div>
+
+                <div class="info-box" id="lookup-info">
+                    <span>&#128269;</span>
+                    <span>Try <strong>D500 NLE</strong> as a demo registration to see vehicle lookup in action.</span>
+                </div>
+
+                <div class="validation-msg" id="err-reg" style="margin-bottom:12px;">Please enter a valid UK registration number</div>
+
+                <div class="action-row" style="padding-top:16px;">
+                    <a href="index.html" class="btn btn--ghost">&#8592; Back</a>
+                    <button class="btn btn--primary" id="btn-find-car">Find your car</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle found confirmation panel -->
+        <div id="panel-vehicle-found" style="display:none;">
+            <div class="question-page">
+                <div class="question-page__breadcrumb">About your car</div>
+                <div class="question-page__heading">We found your car</div>
+                <p style="color:var(--text-muted);margin-bottom:24px;">Please confirm this is the vehicle you want to insure</p>
+
+                <div class="vehicle-found">
+                    <div class="vehicle-found__icon">&#128664;</div>
+                    <div>
+                        <div class="vehicle-found__title" id="veh-title"></div>
+                        <div class="vehicle-found__meta" id="veh-meta"></div>
+                        <div class="vehicle-found__reg" id="veh-reg"></div>
+                    </div>
+                </div>
+
+                <div class="form-block" id="block-veh-confirm">
+                    <label class="form-block__label">Is this your car?</label>
+                    <div class="toggle-pills" role="group" aria-label="Confirm vehicle">
+                        <div class="toggle-pill">
+                            <input type="radio" name="veh-confirm" id="veh-yes" value="yes">
+                            <label for="veh-yes">Yes</label>
+                        </div>
+                        <div class="toggle-pill">
+                            <input type="radio" name="veh-confirm" id="veh-no" value="no">
+                            <label for="veh-no">No</label>
+                        </div>
+                    </div>
+                    <div class="validation-msg" id="err-veh-confirm">Please confirm whether this is your vehicle</div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn--ghost" id="btn-search-again">&#8592; Search again</button>
+                    <button class="btn btn--primary" id="btn-confirm-vehicle">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Car details questions panel -->
+        <div id="panel-questions" style="display:none;">
+            <div class="question-page">
+                <div class="question-page__breadcrumb">About your car</div>
+                <div class="question-page__heading">Tell us about your car</div>
+
+                <!-- When did you buy it? -->
+                <div class="form-block" id="block-purchase-date">
+                    <label class="form-block__label" for="purchase-date">When did you buy it?</label>
+                    <div class="form-block__hint">MM/YYYY</div>
+                    <input class="form-control form-control--date" type="text" id="purchase-date"
+                           placeholder="06/2022" maxlength="7" autocomplete="off">
+                    <div class="validation-msg" id="err-purchase-date">Please enter a valid date (MM/YYYY)</div>
+                </div>
+
+                <!-- Registered keeper -->
+                <div class="form-block" id="block-reg-keeper">
+                    <label class="form-block__label">Are you the registered keeper?</label>
+                    <div class="toggle-pills" role="group">
+                        <div class="toggle-pill">
+                            <input type="radio" name="reg-keeper" id="keeper-yes" value="yes">
+                            <label for="keeper-yes">Yes</label>
+                        </div>
+                        <div class="toggle-pill">
+                            <input type="radio" name="reg-keeper" id="keeper-no" value="no">
+                            <label for="keeper-no">No</label>
+                        </div>
+                    </div>
+                    <div class="validation-msg" id="err-reg-keeper">Please select an option</div>
+                </div>
+
+                <!-- Who owns the car? -->
+                <div class="form-block" id="block-car-owner">
+                    <label class="form-block__label" for="car-owner">Who owns the car?</label>
+                    <select class="form-control form-control--short" id="car-owner">
+                        <option value="">Please select</option>
+                        <option value="proposer">You (the proposer)</option>
+                        <option value="spouse">Spouse / partner</option>
+                        <option value="company">Company</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="validation-msg" id="err-car-owner">Please select who owns the car</div>
+                </div>
+
+                <!-- Car use -->
+                <div class="form-block" id="block-car-use">
+                    <label class="form-block__label">What is the car used for?</label>
+                    <div class="toggle-pills" style="flex-direction:column;align-items:flex-start;" role="group">
+                        <div class="toggle-pill">
+                            <input type="radio" name="car-use" id="use-social" value="social">
+                            <label for="use-social">Social only</label>
+                        </div>
+                        <div class="toggle-pill">
+                            <input type="radio" name="car-use" id="use-commuting" value="commuting">
+                            <label for="use-commuting">Social and commuting</label>
+                        </div>
+                        <div class="toggle-pill">
+                            <input type="radio" name="car-use" id="use-business" value="business">
+                            <label for="use-business">Social, commuting and business</label>
+                        </div>
+                    </div>
+                    <div class="validation-msg" id="err-car-use">Please select how the car is used</div>
+                </div>
+
+                <!-- Annual mileage -->
+                <div class="form-block" id="block-annual-mileage">
+                    <label class="form-block__label" for="annual-mileage">Estimated annual mileage</label>
+                    <select class="form-control form-control--short" id="annual-mileage">
+                        <option value="">Please select</option>
+                        <option value="1000">Up to 1,000</option>
+                        <option value="2000">1,001&ndash;2,000</option>
+                        <option value="3000">2,001&ndash;3,000</option>
+                        <option value="5000">3,001&ndash;5,000</option>
+                        <option value="7000">5,001&ndash;7,000</option>
+                        <option value="8000">7,001&ndash;8,000</option>
+                        <option value="10000">8,001&ndash;10,000</option>
+                        <option value="12000" selected>10,001&ndash;12,000</option>
+                        <option value="15000">12,001&ndash;15,000</option>
+                        <option value="20000">15,001&ndash;20,000</option>
+                        <option value="25000">20,001&ndash;25,000</option>
+                        <option value="30000">25,001&ndash;30,000</option>
+                        <option value="40000">30,001&ndash;40,000</option>
+                        <option value="50000">40,001&ndash;50,000</option>
+                        <option value="50001">50,001+</option>
+                    </select>
+                    <div class="validation-msg" id="err-annual-mileage">Please select your estimated mileage</div>
+                </div>
+
+                <!-- Overnight parking -->
+                <div class="form-block" id="block-overnight-parking">
+                    <label class="form-block__label" for="overnight-parking">Where is the car kept overnight?</label>
+                    <select class="form-control form-control--short" id="overnight-parking">
+                        <option value="">Please select</option>
+                        <option value="garage">Locked garage</option>
+                        <option value="driveway" selected>Driveway at home</option>
+                        <option value="street">Street near home</option>
+                        <option value="carpark">Car park</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <div class="validation-msg" id="err-overnight-parking">Please select where the car is kept overnight</div>
+                </div>
+
+                <!-- Modifications -->
+                <div class="form-block" id="block-modifications">
+                    <label class="form-block__label">Has the car been modified from standard manufacturer's specification?</label>
+                    <div class="toggle-pills" role="group">
+                        <div class="toggle-pill">
+                            <input type="radio" name="modifications" id="mod-yes" value="yes">
+                            <label for="mod-yes">Yes</label>
+                        </div>
+                        <div class="toggle-pill">
+                            <input type="radio" name="modifications" id="mod-no" value="no">
+                            <label for="mod-no">No</label>
+                        </div>
+                    </div>
+                    <div class="validation-msg" id="err-modifications">Please select an option</div>
+                </div>
+
+                <hr style="border:none;border-top:1px solid var(--border);margin:28px 0;">
+
+                <!-- Driving licence -->
+                <div class="form-block" id="block-licence-type">
+                    <label class="form-block__label" for="licence-type">What type of driving licence do you hold?</label>
+                    <select class="form-control form-control--short" id="licence-type">
+                        <option value="">Please select</option>
+                        <option value="full-uk" selected>Full UK licence</option>
+                        <option value="prov-uk">Provisional UK licence</option>
+                        <option value="eu">European Union licence</option>
+                        <option value="intl">International licence</option>
+                    </select>
+                    <div class="validation-msg" id="err-licence-type">Please select your licence type</div>
+                </div>
+
+                <!-- Years licence held -->
+                <div class="form-block" id="block-licence-years">
+                    <label class="form-block__label" for="licence-years">How long have you held this licence?</label>
+                    <select class="form-control form-control--short" id="licence-years">
+                        <option value="">Please select</option>
+                        <option value="0">Less than 1 year</option>
+                        <option value="1">1&ndash;2 years</option>
+                        <option value="3">3&ndash;4 years</option>
+                        <option value="5">5&ndash;9 years</option>
+                        <option value="10">10&ndash;14 years</option>
+                        <option value="15">15&ndash;19 years</option>
+                        <option value="20">20 or more years</option>
+                    </select>
+                    <div class="validation-msg" id="err-licence-years">Please select how long you have held your licence</div>
+                </div>
+
+                <!-- No claims bonus -->
+                <div class="form-block" id="block-ncb">
+                    <label class="form-block__label" for="ncb-years">How many years no claims bonus (NCB) do you have?</label>
+                    <select class="form-control form-control--short" id="ncb-years">
+                        <option value="">Please select</option>
+                        <option value="0">None</option>
+                        <option value="1">1 year</option>
+                        <option value="2">2 years</option>
+                        <option value="3">3 years</option>
+                        <option value="4">4 years</option>
+                        <option value="5">5 years</option>
+                        <option value="6">6 years</option>
+                        <option value="7">7 years</option>
+                        <option value="8">8 years</option>
+                        <option value="9">9 or more years</option>
+                    </select>
+                    <div class="validation-msg" id="err-ncb">Please select your NCB years</div>
+                </div>
+
+                <!-- Claims in last 5 years -->
+                <div class="form-block" id="block-claims">
+                    <label class="form-block__label">Have you had any motor insurance claims in the last 5 years?</label>
+                    <div class="toggle-pills" role="group">
+                        <div class="toggle-pill">
+                            <input type="radio" name="claims" id="claims-yes" value="yes">
+                            <label for="claims-yes">Yes</label>
+                        </div>
+                        <div class="toggle-pill">
+                            <input type="radio" name="claims" id="claims-no" value="no">
+                            <label for="claims-no">No</label>
+                        </div>
+                    </div>
+                    <div class="validation-msg" id="err-claims">Please select an option</div>
+                </div>
+
+                <!-- Claims count (shown only if Yes) -->
+                <div id="block-claims-count" class="form-block" style="display:none;">
+                    <label class="form-block__label" for="claims-count">How many claims?</label>
+                    <select class="form-control form-control--short" id="claims-count">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4+</option>
+                    </select>
+                </div>
+
+                <!-- Convictions -->
+                <div class="form-block" id="block-convictions">
+                    <label class="form-block__label">Do you have any motoring convictions in the last 5 years?</label>
+                    <div class="toggle-pills" role="group">
+                        <div class="toggle-pill">
+                            <input type="radio" name="convictions" id="conv-yes" value="yes">
+                            <label for="conv-yes">Yes</label>
+                        </div>
+                        <div class="toggle-pill">
+                            <input type="radio" name="convictions" id="conv-no" value="no">
+                            <label for="conv-no">No</label>
+                        </div>
+                    </div>
+                    <div class="validation-msg" id="err-convictions">Please select an option</div>
+                </div>
+
+                <!-- Convictions count (shown only if Yes) -->
+                <div id="block-conv-count" class="form-block" style="display:none;">
+                    <label class="form-block__label" for="conv-count">How many convictions?</label>
+                    <select class="form-control form-control--short" id="conv-count">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4+</option>
+                    </select>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn--ghost" id="btn-back-to-reg">&#8592; Back</button>
+                    <button class="btn btn--primary" id="btn-continue-to-cover">Continue</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer__inner">
+            <div>
+                <div class="footer__copy">&copy; <span id="footer-year"></span> <strong>Swinton Go!</strong> All rights reserved</div>
+                <div class="footer__links">
+                    <a href="#">Important info</a>
+                    <span class="sep">/</span>
+                    <a href="#">Privacy policy <span class="footer__ext-icon">&#x2197;</span></a>
+                    <span class="sep">/</span>
+                    <a href="#">Cookie policy <span class="footer__ext-icon">&#x2197;</span></a>
+                    <span class="sep">/</span>
+                    <a href="#">Contact us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+    (function () {
+        var foundVehicle = null;
+
+        // ── Purchase date auto-format MM/YYYY ─────────────────
+        document.getElementById('purchase-date').addEventListener('input', function () {
+            let v = this.value.replace(/\D/g, '');
+            if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2, 6);
+            this.value = v;
+        });
+
+        // ── Registration lookup ───────────────────────────────
+        document.getElementById('btn-find-car').addEventListener('click', function () {
+            const regRaw = document.getElementById('reg-input').value.trim();
+            if (!regRaw || regRaw.replace(/\s+/g,'').length < 2) {
+                showErr('err-reg');
+                return;
+            }
+            clearErr('err-reg');
+
+            // Show spinner (simulated API call stub)
+            document.getElementById('panel-reg-lookup').querySelector('.action-row').style.display = 'none';
+            document.getElementById('lookup-spinner').style.display = '';
+            document.getElementById('lookup-info').style.display = 'none';
+
+            setTimeout(function () {
+                document.getElementById('lookup-spinner').style.display = 'none';
+                foundVehicle = lookupVehicle(regRaw);
+
+                if (foundVehicle) {
+                    Store.set('registration', regRaw.replace(/\s+/g,'').toUpperCase());
+                    Store.set('vehicle', foundVehicle);
+
+                    document.getElementById('veh-title').textContent =
+                        foundVehicle.make + ' ' + foundVehicle.model + ' ' + foundVehicle.variant;
+                    document.getElementById('veh-meta').innerHTML =
+                        foundVehicle.year + ' &bull; ' + foundVehicle.cc + 'cc &bull; ' +
+                        foundVehicle.fuelType + ' &bull; ' + foundVehicle.colour;
+                    document.getElementById('veh-reg').textContent = regRaw.toUpperCase();
+
+                    document.getElementById('panel-reg-lookup').style.display = 'none';
+                    document.getElementById('panel-vehicle-found').style.display = '';
+                } else {
+                    // Vehicle not found - show error and reset
+                    document.getElementById('panel-reg-lookup').querySelector('.action-row').style.display = '';
+                    document.getElementById('lookup-info').style.display = '';
+                    showErr('err-reg', 'We could not find a vehicle for that registration. Please check and try again.');
+                }
+            }, 1200);
+        });
+
+        document.getElementById('reg-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') document.getElementById('btn-find-car').click();
+        });
+
+        // ── Vehicle confirmed ─────────────────────────────────
+        document.getElementById('btn-confirm-vehicle').addEventListener('click', function () {
+            const confirm = document.querySelector('input[name="veh-confirm"]:checked');
+            if (!confirm) { showErr('err-veh-confirm'); return; }
+            clearErr('err-veh-confirm');
+
+            if (confirm.value === 'no') {
+                // Reset and search again
+                document.getElementById('panel-vehicle-found').style.display = 'none';
+                document.getElementById('panel-reg-lookup').style.display = '';
+                document.getElementById('panel-reg-lookup').querySelector('.action-row').style.display = '';
+                document.getElementById('lookup-info').style.display = '';
+                document.getElementById('reg-input').value = '';
+                return;
+            }
+
+            document.getElementById('panel-vehicle-found').style.display = 'none';
+            document.getElementById('panel-questions').style.display = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.getElementById('btn-search-again').addEventListener('click', function () {
+            document.getElementById('panel-vehicle-found').style.display = 'none';
+            document.getElementById('panel-reg-lookup').style.display = '';
+            document.getElementById('panel-reg-lookup').querySelector('.action-row').style.display = '';
+            document.getElementById('lookup-info').style.display = '';
+            document.getElementById('reg-input').value = '';
+            clearErr('err-reg');
+        });
+
+        // ── Claims/convictions toggle ─────────────────────────
+        document.querySelectorAll('input[name="claims"]').forEach(function (r) {
+            r.addEventListener('change', function () {
+                document.getElementById('block-claims-count').style.display =
+                    (this.value === 'yes') ? '' : 'none';
+            });
+        });
+
+        document.querySelectorAll('input[name="convictions"]').forEach(function (r) {
+            r.addEventListener('change', function () {
+                document.getElementById('block-conv-count').style.display =
+                    (this.value === 'yes') ? '' : 'none';
+            });
+        });
+
+        // ── Back to reg search ────────────────────────────────
+        document.getElementById('btn-back-to-reg').addEventListener('click', function () {
+            document.getElementById('panel-questions').style.display = 'none';
+            document.getElementById('panel-vehicle-found').style.display = '';
+        });
+
+        // ── Form validation helpers ───────────────────────────
+        function picked(name) {
+            const el = document.querySelector('input[name="' + name + '"]:checked');
+            return el ? el.value : null;
+        }
+
+        function selectVal(id) {
+            const el = document.getElementById(id);
+            return el ? el.value : '';
+        }
+
+        // ── Continue to cover ─────────────────────────────────
+        document.getElementById('btn-continue-to-cover').addEventListener('click', function () {
+            let valid = true;
+
+            function chkSelect(id, errId) {
+                const v = selectVal(id);
+                if (!v) { document.getElementById(id).classList.add('form-control--error'); showErr(errId); valid = false; }
+                else    { document.getElementById(id).classList.remove('form-control--error'); clearErr(errId); }
+                return v;
+            }
+
+            function chkRadio(name, errId) {
+                const v = picked(name);
+                if (!v) { showErr(errId); valid = false; }
+                else    { clearErr(errId); }
+                return v;
+            }
+
+            // Purchase date (MM/YYYY)
+            const pd = document.getElementById('purchase-date');
+            const pdOk = /^\d{2}\/\d{4}$/.test(pd.value);
+            if (!pdOk) { pd.classList.add('form-control--error'); showErr('err-purchase-date'); valid = false; }
+            else { pd.classList.remove('form-control--error'); clearErr('err-purchase-date'); }
+
+            chkRadio('reg-keeper', 'err-reg-keeper');
+            const owner   = chkSelect('car-owner', 'err-car-owner');
+            chkRadio('car-use', 'err-car-use');
+            const mileage = chkSelect('annual-mileage', 'err-annual-mileage');
+            const parking = chkSelect('overnight-parking', 'err-overnight-parking');
+            chkRadio('modifications', 'err-modifications');
+            const licType = chkSelect('licence-type', 'err-licence-type');
+            const licYrs  = chkSelect('licence-years', 'err-licence-years');
+            const ncb     = chkSelect('ncb-years', 'err-ncb');
+            chkRadio('claims', 'err-claims');
+            chkRadio('convictions', 'err-convictions');
+
+            if (!valid) {
+                document.querySelector('.validation-msg.visible')
+                    ?.closest('.form-block')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            const claimsVal = picked('claims');
+            const convVal   = picked('convictions');
+
+            Store.set('purchaseDate',    pd.value);
+            Store.set('registeredKeeper', picked('reg-keeper'));
+            Store.set('carOwner',        owner);
+            Store.set('carUse',          picked('car-use'));
+            Store.set('annualMileage',   mileage);
+            Store.set('overnightParking', parking);
+            Store.set('modifications',   picked('modifications'));
+            Store.set('licenceType',     licType);
+            Store.set('licenceYears',    licYrs);
+            Store.set('ncbYears',        ncb);
+            Store.set('claimsCount',     claimsVal === 'yes' ? parseInt(selectVal('claims-count'), 10) : 0);
+            Store.set('convictionsCount', convVal === 'yes' ? parseInt(selectVal('conv-count'), 10) : 0);
+
+            window.location.href = 'your-cover.html';
+        });
+    })();
+    </script>
+</body>
+</html>

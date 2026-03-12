@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Details - Swinton Go! Insurance</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-step="1">
+
+    <!-- Header -->
+    <header class="page-header">
+        <div class="page-header__wrapper">
+            <a href="index.html" class="page-header__logo" aria-label="Swinton Go! Insurance home">
+                <img src="images/logo.png" alt="Swinton Go! Insurance">
+            </a>
+            <nav class="progress-nav" aria-label="Quote progress">
+                <div class="progress-step progress-step--active">
+                    <div class="progress-step__dot"></div>
+                    <div class="progress-step__line"></div>
+                    <span class="progress-step__label">Your details</span>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-step__dot"></div>
+                    <div class="progress-step__line"></div>
+                    <span class="progress-step__label">Your car</span>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-step__dot"></div>
+                    <div class="progress-step__line"></div>
+                    <span class="progress-step__label">Your cover</span>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-step__dot"></div>
+                    <span class="progress-step__label">Quote</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+
+        <!-- Welcome heading -->
+        <div class="welcome-banner">
+            <h1>Welcome to Swinton Go!</h1>
+            <p>We'll search our panel of car insurers to find a great policy for you</p>
+        </div>
+
+        <!-- Two-column layout -->
+        <div class="two-col-layout">
+
+            <!-- Left column: Before you begin + Tell us about yourself -->
+            <div>
+                <!-- Before you begin -->
+                <div class="info-section" style="margin-bottom: 36px;">
+                    <h2>Before you begin</h2>
+                    <p>
+                        Swinton Go! Insurance is arranged and administered by BISL Limited,
+                        an insurance intermediary. References to 'We', 'Us' and 'Our' mean
+                        BISL Limited. Any information you give to us will only be used to
+                        provide you with a Swinton Go! Insurance quote and/or policy.
+                    </p>
+                    <p>It is important that the information you provide throughout the quote and duration of the policy is accurate.</p>
+                    <div class="warning-box">
+                        <div class="warning-box__icon">!</div>
+                        <span>Failure to disclose correct and complete information to the best of your knowledge may result in increased premiums,
+                        refusal of a claim or not being fully paid, your policy being cancelled or being made null &amp; void and treated as if it never existed</span>
+                    </div>
+                </div>
+
+                <!-- Tell us about yourself -->
+                <div>
+                    <h2 style="font-size:24px;font-weight:800;color:var(--brand-navy);margin-bottom:28px;">Tell us about yourself</h2>
+
+                    <!-- Title -->
+                    <div class="form-block" id="block-title">
+                        <label class="form-block__label">Title</label>
+
+                        <!-- Title info tooltip -->
+                        <div class="tooltip-box" id="title-tooltip" role="alert">
+                            <button class="tooltip-box__close" id="title-tooltip-close" aria-label="Close">&#x2715;</button>
+                            We understand that not everyone may identify with these titles. We want everyone to feel included and are
+                            working hard to correct this. For the time being, please refer to your birth certificate or gender recognition
+                            certificate. Your answer won't impact the price or policy available to you. Thank you for your patience.
+                        </div>
+
+                        <div class="toggle-pills" id="title-pills" role="group" aria-label="Select your title">
+                            <div class="toggle-pill">
+                                <input type="radio" name="title" id="title-mr"   value="MR">
+                                <label for="title-mr">Mr</label>
+                            </div>
+                            <div class="toggle-pill">
+                                <input type="radio" name="title" id="title-mrs"  value="MRS">
+                                <label for="title-mrs">Mrs</label>
+                            </div>
+                            <div class="toggle-pill">
+                                <input type="radio" name="title" id="title-ms"   value="MS">
+                                <label for="title-ms">Ms</label>
+                            </div>
+                            <div class="toggle-pill">
+                                <input type="radio" name="title" id="title-miss" value="MISS">
+                                <label for="title-miss">Miss</label>
+                            </div>
+                            <div class="toggle-pill">
+                                <input type="radio" name="title" id="title-mx"   value="MX">
+                                <label for="title-mx">Mx</label>
+                            </div>
+                            <div class="toggle-pill">
+                                <input type="radio" name="title" id="title-dr"   value="DR">
+                                <label for="title-dr">Dr</label>
+                            </div>
+                        </div>
+                        <div class="validation-msg" id="err-title">Please select a title</div>
+                    </div>
+
+                    <!-- First name -->
+                    <div class="form-block" id="block-firstName">
+                        <label class="form-block__label" for="firstName">First name</label>
+                        <input class="form-control" type="text" id="firstName" name="firstName"
+                               autocomplete="given-name" maxlength="30" placeholder="e.g. John">
+                        <div class="validation-msg" id="err-firstName">Please enter your first name</div>
+                    </div>
+
+                    <!-- Surname -->
+                    <div class="form-block" id="block-lastName">
+                        <label class="form-block__label" for="lastName">Surname</label>
+                        <input class="form-control" type="text" id="lastName" name="lastName"
+                               autocomplete="family-name" maxlength="30" placeholder="e.g. Smith">
+                        <div class="validation-msg" id="err-lastName">Please enter your surname</div>
+                    </div>
+
+                    <!-- Date of birth -->
+                    <div class="form-block" id="block-dob">
+                        <label class="form-block__label" for="dob">Date of birth</label>
+                        <input class="form-control form-control--date" type="text" id="dob" name="dob"
+                               placeholder="dd/mm/yyyy" maxlength="10" autocomplete="bday">
+                        <div class="validation-msg" id="err-dob">Please enter a valid date of birth (DD/MM/YYYY)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right column: How we use your data -->
+            <div>
+                <div class="info-section">
+                    <h2>How we use your data</h2>
+                    <p>We will use your data for the purposes of providing your quote which may include:</p>
+                    <ul>
+                        <li>Sharing your data with our insurers.</li>
+                        <li>Using your data for fraud prevention and to verify the information you provide to us.</li>
+                        <li>Checks with external databases such as credit reference agencies and publicly available sources of information as part of this process. Any credit searches will appear on your credit report but will not be visible to other lenders, unless you take out a policy and choose to pay by monthly instalments.</li>
+                    </ul>
+                    <br>
+                    <p>If you have previously held a product with BISL Limited or obtained a quote in the past, we may carry out checks against the data we already hold on you.</p>
+                    <br>
+                    <p>Our <a href="#">Privacy Policy</a> provides more details of how your data is used, the legal basis that we rely on to process it and gives you information on the rights you have over your data, and how to exercise them.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA section -->
+        <div style="text-align:center;padding:24px 32px 48px;">
+            <button class="btn btn--primary btn--large" id="btn-start-quote">Start my quote</button>
+            <p class="consent-text">
+                Choosing to continue by selecting 'Start my quote', you are<br>
+                confirming that you have read and agreed to our:<br>
+                <a href="#">Terms and conditions</a> &nbsp; <a href="#">Quote acceptance information</a>
+            </p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer__inner">
+            <div>
+                <div class="footer__copy">&copy; <span id="footer-year"></span> <strong>Swinton Go!</strong> All rights reserved</div>
+                <div class="footer__links">
+                    <a href="#">Important info</a>
+                    <span class="sep">/</span>
+                    <a href="#">Privacy policy <span class="footer__ext-icon">&#x2197;</span></a>
+                    <span class="sep">/</span>
+                    <a href="#">Cookie policy <span class="footer__ext-icon">&#x2197;</span></a>
+                    <span class="sep">/</span>
+                    <a href="#">Contact us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+    (function () {
+        // DOB auto-format DD/MM/YYYY
+        const dobInput = document.getElementById('dob');
+        dobInput.addEventListener('input', function () {
+            let v = this.value.replace(/\D/g, '');
+            if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
+            if (v.length > 5) v = v.slice(0, 5) + '/' + v.slice(5, 9);
+            this.value = v;
+        });
+
+        // Title tooltip toggle
+        document.getElementById('title-pills').addEventListener('click', function (e) {
+            const pill = e.target.closest('.toggle-pill');
+            if (pill) clearErr('err-title');
+        });
+
+        document.getElementById('title-tooltip-close').addEventListener('click', function () {
+            document.getElementById('title-tooltip').classList.remove('visible');
+        });
+
+        // Show tooltip for inclusive title question when first loading
+        // (optional — uncomment to show on load)
+        // document.getElementById('title-tooltip').classList.add('visible');
+
+        function parseDOB(str) {
+            const m = str.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+            if (!m) return null;
+            const d = new Date(+m[3], +m[2] - 1, +m[1]);
+            if (d.getDate() !== +m[1] || d.getMonth() !== +m[2] - 1) return null;
+            return d;
+        }
+
+        document.getElementById('btn-start-quote').addEventListener('click', function () {
+            let valid = true;
+
+            // Title
+            const titleVal = document.querySelector('input[name="title"]:checked');
+            if (!titleVal) { showErr('err-title'); valid = false; }
+            else clearErr('err-title');
+
+            // First name
+            const fn = document.getElementById('firstName');
+            if (!fn.value.trim() || fn.value.trim().length < 2) {
+                fn.classList.add('form-control--error');
+                showErr('err-firstName');
+                valid = false;
+            } else {
+                fn.classList.remove('form-control--error');
+                clearErr('err-firstName');
+            }
+
+            // Surname
+            const ln = document.getElementById('lastName');
+            if (!ln.value.trim() || ln.value.trim().length < 2) {
+                ln.classList.add('form-control--error');
+                showErr('err-lastName');
+                valid = false;
+            } else {
+                ln.classList.remove('form-control--error');
+                clearErr('err-lastName');
+            }
+
+            // DOB
+            const dob = document.getElementById('dob');
+            const dobDate = parseDOB(dob.value);
+            const today = new Date();
+            const minAge = new Date(today.getFullYear() - 17, today.getMonth(), today.getDate());
+            const maxAge = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
+            if (!dobDate || dobDate > minAge || dobDate < maxAge) {
+                dob.classList.add('form-control--error');
+                showErr('err-dob');
+                valid = false;
+            } else {
+                dob.classList.remove('form-control--error');
+                clearErr('err-dob');
+            }
+
+            if (!valid) {
+                document.querySelector('.validation-msg.visible')
+                    ?.closest('.form-block')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            Store.clear();
+            Store.set('title', titleVal.value);
+            Store.set('firstName', fn.value.trim());
+            Store.set('lastName', ln.value.trim());
+            Store.set('dob', dob.value);
+
+            window.location.href = 'your-car.html';
+        });
+
+        document.getElementById('dob').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') document.getElementById('btn-start-quote').click();
+        });
+    })();
+    </script>
+</body>
+</html>

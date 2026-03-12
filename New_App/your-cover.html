@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cover - Swinton Go! Insurance</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-step="3">
+
+    <!-- Header -->
+    <header class="page-header">
+        <div class="page-header__wrapper">
+            <a href="index.html" class="page-header__logo" aria-label="Swinton Go! Insurance home">
+                <img src="images/logo.png" alt="Swinton Go! Insurance">
+            </a>
+            <nav class="progress-nav" aria-label="Quote progress">
+                <div class="progress-step progress-step--done">
+                    <div class="progress-step__dot"></div>
+                    <div class="progress-step__line"></div>
+                    <span class="progress-step__label">Your details</span>
+                </div>
+                <div class="progress-step progress-step--done">
+                    <div class="progress-step__dot"></div>
+                    <div class="progress-step__line"></div>
+                    <span class="progress-step__label">Your car</span>
+                </div>
+                <div class="progress-step progress-step--active">
+                    <div class="progress-step__dot"></div>
+                    <div class="progress-step__line"></div>
+                    <span class="progress-step__label">Your cover</span>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-step__dot"></div>
+                    <span class="progress-step__label">Quote</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <div class="question-page">
+            <div class="question-page__breadcrumb">Your cover</div>
+            <div class="question-page__heading">Choose your cover</div>
+            <p style="color:var(--text-muted);margin-bottom:28px;">Select the level of cover that suits you best</p>
+
+            <!-- Cover type -->
+            <div class="form-block" id="block-cover-type">
+                <label class="form-block__label">Cover type</label>
+                <div class="cover-options" id="cover-options">
+
+                    <div class="cover-card" data-value="tpo">
+                        <input type="radio" name="cover-type" value="tpo" class="cover-card__radio" id="ct-tpo">
+                        <div class="cover-card__title">Third Party Only</div>
+                        <div class="cover-card__desc">Minimum legal requirement. Covers damage to other people's vehicles and property.</div>
+                    </div>
+
+                    <div class="cover-card" data-value="tpft">
+                        <input type="radio" name="cover-type" value="tpft" class="cover-card__radio" id="ct-tpft">
+                        <div class="cover-card__title">Third Party Fire &amp; Theft</div>
+                        <div class="cover-card__desc">As above plus protection if your car is stolen or damaged by fire.</div>
+                    </div>
+
+                    <div class="cover-card" data-value="comprehensive">
+                        <div class="cover-card__badge">Recommended</div>
+                        <input type="radio" name="cover-type" value="comprehensive" class="cover-card__radio" id="ct-comp">
+                        <div class="cover-card__title">Comprehensive</div>
+                        <div class="cover-card__desc">Our most popular cover. Protects your car too, plus many additional benefits.</div>
+                    </div>
+
+                </div>
+                <div class="validation-msg" id="err-cover-type">Please select a cover type</div>
+            </div>
+
+            <!-- Start date -->
+            <div class="form-block" id="block-start-date">
+                <label class="form-block__label" for="cover-start-date">When would you like your cover to start?</label>
+                <input class="form-control form-control--short" type="date" id="cover-start-date">
+                <div class="validation-msg" id="err-cover-start-date">Please select a cover start date</div>
+            </div>
+
+            <!-- Voluntary excess -->
+            <div class="form-block" id="block-excess">
+                <label class="form-block__label" for="voluntary-excess">Voluntary excess</label>
+                <div class="form-block__hint">Adding a voluntary excess can reduce your premium</div>
+                <select class="form-control form-control--short" id="voluntary-excess">
+                    <option value="0">£0</option>
+                    <option value="50">£50</option>
+                    <option value="100">£100</option>
+                    <option value="150">£150</option>
+                    <option value="200">£200</option>
+                    <option value="250" selected>£250</option>
+                    <option value="300">£300</option>
+                    <option value="400">£400</option>
+                    <option value="500">£500</option>
+                    <option value="750">£750</option>
+                    <option value="1000">£1,000</option>
+                </select>
+                <div class="validation-msg" id="err-voluntary-excess">Please select a voluntary excess amount</div>
+            </div>
+
+            <!-- Payment method -->
+            <div class="form-block" id="block-payment">
+                <label class="form-block__label">How would you like to pay?</label>
+                <div class="toggle-pills" role="group">
+                    <div class="toggle-pill">
+                        <input type="radio" name="payment-method" id="pay-monthly" value="monthly">
+                        <label for="pay-monthly">Monthly</label>
+                    </div>
+                    <div class="toggle-pill">
+                        <input type="radio" name="payment-method" id="pay-annual" value="annual">
+                        <label for="pay-annual">Annually</label>
+                    </div>
+                </div>
+                <div class="validation-msg" id="err-payment-method">Please select a payment method</div>
+            </div>
+
+            <!-- Additional drivers -->
+            <div class="form-block" id="block-add-drivers">
+                <label class="form-block__label">Do you want to add any additional drivers?</label>
+                <div class="toggle-pills" role="group">
+                    <div class="toggle-pill">
+                        <input type="radio" name="add-drivers" id="adddrv-yes" value="yes">
+                        <label for="adddrv-yes">Yes</label>
+                    </div>
+                    <div class="toggle-pill">
+                        <input type="radio" name="add-drivers" id="adddrv-no" value="no">
+                        <label for="adddrv-no">No</label>
+                    </div>
+                </div>
+                <div class="validation-msg" id="err-add-drivers">Please select an option</div>
+            </div>
+
+            <div class="info-box" id="adddrv-notice" style="display:none;">
+                <span>&#8505;&#65039;</span>
+                <span>For this demo, additional driver entry is not available. You can proceed with the main driver only.</span>
+            </div>
+
+            <div class="action-row">
+                <a href="your-car.html" class="btn btn--ghost">&#8592; Back</a>
+                <button class="btn btn--primary btn--large" id="btn-get-quote">Get my quote</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer__inner">
+            <div>
+                <div class="footer__copy">&copy; <span id="footer-year"></span> <strong>Swinton Go!</strong> All rights reserved</div>
+                <div class="footer__links">
+                    <a href="#">Important info</a>
+                    <span class="sep">/</span>
+                    <a href="#">Privacy policy <span class="footer__ext-icon">&#x2197;</span></a>
+                    <span class="sep">/</span>
+                    <a href="#">Cookie policy <span class="footer__ext-icon">&#x2197;</span></a>
+                    <span class="sep">/</span>
+                    <a href="#">Contact us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+    (function () {
+        // Default start date to tomorrow
+        (function setDefaultDates() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const iso   = tomorrow.toISOString().slice(0, 10);
+            const today = new Date().toISOString().slice(0, 10);
+            const inp   = document.getElementById('cover-start-date');
+            inp.min   = today;
+            inp.value = iso;
+        }());
+
+        // Pre-select Comprehensive
+        (function selectComprehensive() {
+            const compCard = document.querySelector('.cover-card[data-value="comprehensive"]');
+            if (compCard) {
+                compCard.classList.add('selected');
+                const radio = compCard.querySelector('input[type="radio"]');
+                if (radio) radio.checked = true;
+            }
+        }());
+
+        // Cover card click
+        document.querySelectorAll('.cover-card').forEach(function (card) {
+            card.addEventListener('click', function () {
+                document.querySelectorAll('.cover-card').forEach(function (c) {
+                    c.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio) radio.checked = true;
+                clearErr('err-cover-type');
+            });
+        });
+
+        // Additional drivers toggle
+        document.querySelectorAll('input[name="add-drivers"]').forEach(function (r) {
+            r.addEventListener('change', function () {
+                document.getElementById('adddrv-notice').style.display =
+                    (this.value === 'yes') ? '' : 'none';
+            });
+        });
+
+        // Get My Quote
+        document.getElementById('btn-get-quote').addEventListener('click', function () {
+            let ok = true;
+
+            function pickRadio(nm) {
+                const e = document.querySelector('input[name="' + nm + '"]:checked');
+                return e ? e.value : null;
+            }
+
+            const coverType = pickRadio('cover-type');
+            if (!coverType) { showErr('err-cover-type'); ok = false; } else { clearErr('err-cover-type'); }
+
+            const startEl = document.getElementById('cover-start-date');
+            if (!startEl.value) {
+                startEl.classList.add('form-control--error');
+                showErr('err-cover-start-date');
+                ok = false;
+            } else {
+                startEl.classList.remove('form-control--error');
+                clearErr('err-cover-start-date');
+            }
+
+            const excessEl = document.getElementById('voluntary-excess');
+            if (excessEl.value === '') {
+                excessEl.classList.add('form-control--error');
+                showErr('err-voluntary-excess');
+                ok = false;
+            } else {
+                excessEl.classList.remove('form-control--error');
+                clearErr('err-voluntary-excess');
+            }
+
+            const payMethod = pickRadio('payment-method');
+            if (!payMethod) { showErr('err-payment-method'); ok = false; } else { clearErr('err-payment-method'); }
+
+            const addDrivers = pickRadio('add-drivers');
+            if (!addDrivers) { showErr('err-add-drivers'); ok = false; } else { clearErr('err-add-drivers'); }
+
+            if (!ok) {
+                document.querySelector('.validation-msg.visible')
+                    ?.closest('.form-block')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            Store.set('coverType',       coverType);
+            Store.set('startDate',       startEl.value);
+            Store.set('voluntaryExcess', excessEl.value);
+            Store.set('paymentMethod',   payMethod);
+
+            window.location.href = 'your_cover.html';
+        });
+    }());
+    </script>
+</body>
+</html>
